@@ -55,13 +55,6 @@
 <script src="/js/member.js"></script>
 <script layout:fragment="script" th:inline="javascript">
 
-    const error = [[${error}]]
-
-    if(error)
-    {
-        alert(error);
-    }
-
     document.querySelector(".submitBtn").addEventListener("click", function (e){
         const username = document.getElementsByName("username")[0].value
         const password = document.getElementsByName("password")[0].value

@@ -103,17 +103,8 @@
     const memberPassword = document.getElementById("password")
     const memberEmail = document.getElementById("email")
     const memberNickname = document.getElementById("nickname")
-
-    if(errors)
-    {
-        let errorMsg = ''
-        for(let i=0; i < errors.length; i++)
-        {
-            errorMsg += `${errors[i].defaultMessage}\n`
-        }
-        alert(errorMsg)
-    }
     const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
+
     document.querySelector(".setProfileImageBtn").addEventListener("click", function (e){
         e.preventDefault()
         e.stopPropagation()
