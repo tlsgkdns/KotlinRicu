@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CommentRepository: JpaRepository<Comment, Long> {
     fun getCommentsByBoardId(boardId: Long, pageable: Pageable): Page<Comment>
+    fun countByBoardId(boardId: Long): Int
 }

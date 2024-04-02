@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="container py-5">
+        <form>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <div class="card-body text-center">
+                            <h1>Profile Image</h1>
+                            <div class="profileImage">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                     class="rounded-circle img-fluid" style="width: 150px;" id="altImage"/>
+                            </div>
+                            <div class="d-flex justify-content-center mb-2 my-2">
+                                <button class="btn btn-primary setProfileImageBtn" type="button">Set Profile Image</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="row">
+                            <small style="color:red" id="nicknameInfo"></small>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">NickName</span>
+                                <input type="text" class="form-control" id="nickname" placeholder="Nickname">
+                            </div>
+                            <small style="color:red" id="usernameInfo"></small>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Member ID</span>
+                                <input type="text" class="form-control" id="username" placeholder="MemberID">
+                            </div>
+                            <small style="color:red" id="passwordInfo"></small>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Password</span>
+                                <input type="password" class="form-control" id="password" placeholder="Password">
+                                <span class="input-group-text">Password Check</span>
+                                <input type="password" class="form-control" id="passwordCheck" placeholder="Password">
+                            </div>
+                            &nbsp;
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">E-MAIL</span>
+                                <input type="text" class="form-control" id="email" placeholder="Email">
+                            </div>
+                            <div class="uploadHidden">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-4">
+                <div class="front-end">
+                    <button type="button" class="btn btn-primary submitBtn">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal uploadModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="file" name="file" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary uploadBtn">Upload</button>
+                    <button type="button" class="btn btn-outline-dark closeUploadBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/uploadFile.js"></script>
+    <script src="/js/member.js"></script>
+    <script src="/js/AvailableCheckList.js"></script>
+</div>
+</body>
+<script layout:fragment="script" th:inline="javascript">
+
+    let tmpFile = null
+    let usernameChecked = false
+    let nicknameChecked = false
+
+    const memberImage = document.querySelector(".profileImage")
+    const memberUsername = document.getElementById("username")
+    const memberPassword = document.getElementById("password")
+    const memberEmail = document.getElementById("email")
+    const memberNickname = document.getElementById("nickname")
+
+    if(errors)
+    {
+        let errorMsg = ''
+        for(let i=0; i < errors.length; i++)
+        {
+            errorMsg += `${errors[i].defaultMessage}\n`
+        }
+        alert(errorMsg)
+    }
+    const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
+    document.querySelector(".setProfileImageBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        showUploadModal(e, uploadModal)
+    }, false)
+    document.querySelector(".closeUploadBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        hideUploadModal(e, uploadModal)
+    }, false)
+    document.querySelector(".uploadBtn").addEventListener("click", function (e){
+        console.log("Uploading.....")
+        uploadImage(document.querySelector("input[name='file']"), showUploadFile)
+    })
+    const profileImage = document.querySelector(".profileImage")
+    function showUploadFile({uuid, filename, link})
+    {
+        if(tmpFile != null) removeFileLinkToServer(tmpFile)
+        const str = `<img src="/images/${link}" alt="avatar" data-src="${uuid+"_"+filename}"
+                                 class="rounded-circle img-fluid profileImage" style="width: 150px;" >`
+        tmpFile = uuid+"_"+filename
+        profileImage.innerHTML = str
+    }
+
+    document.getElementById("nickname").addEventListener("keyup", function (e){
+        const nickname = document.getElementById('nickname').value
+        if(nickname == null || nickname.length === 0) return;
+        isAvailableNickname(nickname).then(
+            result => {
+                nicknameChecked = result.result
+                document.getElementById("nicknameInfo").innerHTML = result.errorMessage
+            }
+        )
+    })
+
+    document.getElementById("username").addEventListener("keyup", function (e){
+        const username = document.getElementById('username').value
+        if(username == null || username.length === 0) return;
+        isAvailableUsername(username).then(
+            result => {
+                usernameChecked = result.result
+                document.getElementById("usernameInfo").innerHTML = result.errorMessage
+            }
+        )
+    })
+
+    function checkPassword()
+    {
+        return document.getElementById("password").value === document.getElementById("passwordCheck").value
+    }
+
+    let submitting = false
+    document.querySelector(".submitBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        if(!nicknameChecked || !usernameChecked || !checkPassword())
+        {
+            alert("값을 확인해주세여.")
+            return
+        }
+        submitting = true
+        console.log(memberNickname.value)
+        memberSignUp(memberNickname.value, memberUsername.value
+            , memberEmail.value, memberPassword.value, memberImage.querySelector("img").getAttribute("data-src"))
+            .then(
+                data =>
+                {
+                    self.location = '/member/login'
+                }
+            )
+    }, false)
+
+    window.onbeforeunload = function ()
+    {
+        if(!submitting && tmpFile != null)
+            removeFileLinkToServer(tmpFile)
+    }
+</script>
+</html>

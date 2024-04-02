@@ -7,5 +7,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface QueryDslBoardRepository {
-    fun searchBoard(pageable: Pageable, galleryId: String, boardSearchRequest: BoardSearchRequest): Page<Board>
+    fun searchBoard(pageable: Pageable, galleryId: Long
+                    ,boardSearchRequest: BoardSearchRequest): Page<Board>
 }

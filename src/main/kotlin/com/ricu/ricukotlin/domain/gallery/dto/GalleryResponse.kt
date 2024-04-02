@@ -4,12 +4,12 @@ import com.ricu.ricukotlin.domain.gallery.model.Gallery
 import jdk.jfr.Threshold
 
 data class GalleryResponse(
-    val galleryUrl: String,
+    val galleryId: Long,
     val title: String,
     val explanation: String,
     val galleryImageName: String?,
     val popularThreshold: Int,
-    val creatorName: String
+    val creatorUsername: String?
 )
 {
     companion object
@@ -18,12 +18,12 @@ data class GalleryResponse(
         {
             return gallery.let {
                 GalleryResponse(
-                    galleryUrl = it.galleryUrl,
                     title = it.title,
                     explanation = it.explanation,
-                    galleryImageName = it.galleryImage?.uuid,
+                    galleryImageName = it.galleryImage?.getLink(),
                     popularThreshold = it.popularThreshold,
-                    creatorName = it.creator?.nickname!!
+                    creatorUsername = it.creator?.username,
+                    galleryId = it.galleryId!!
                 )
             }
         }

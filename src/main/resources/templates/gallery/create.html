@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="card justify-content-center">
+        <div class="card-header">Create Gallery</div>
+        <div class="card-body">
+            <form>
+                <small style="color:red" id="titleInfo"></small>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Title</span>
+                    <input type="text" class="form-control" id="title" placeholder="Title">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Manager</span>
+                    <input type="text" class="form-control" id="username" readonly>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Explanation</span>
+                    <textarea id="explanation" class="form-control col-sm-5" rows="5" style="white-space: pre-wrap"></textarea>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Images</span>
+                    <div class="float-end uploadHidden">
+                        <button type="button" class="btn btn-primary uploadFileBtn">ADD Files</button>
+                    </div>
+                </div>
+                <div class="my-4">
+                    <div class="front-end">
+                        <button type="button" class="btn btn-primary submitBtn">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row-mt-3">
+        <div class="col ">
+            <div class="container-fluid d-flex galleryImage" style="flex-wrap: wrap;">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal uploadModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="file" name="file" class="form-control" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary uploadBtn">Upload</button>
+                    <button type="button" class="btn btn-outline-dark closeUploadBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/uploadFile.js"></script>
+    <script src="/js/gallery.js"></script>
+</div>
+</body>
+
+<script layout:fragment="script" th:inline="javascript">
+    const galleryImage = document.querySelector(".galleryImage")
+    const galleryTitle = document.getElementById("title")
+    const galleryExplanation = document.getElementById("explanation")
+    const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
+
+    getLoginUsername().then(
+        username => {
+            document.getElementById("username").value = username
+        }
+    )
+    document.querySelector(".uploadFileBtn").addEventListener("click", function (e){
+        e.stopPropagation()
+        e.preventDefault()
+        showUploadModal(e, uploadModal)
+    }, false)
+
+    document.querySelector(".uploadBtn").addEventListener("click", function (e){
+        uploadImage(document.querySelector("input[name='file']"), showUploadFile)
+    })
+    let tmpFile = null
+    function showUploadFile({uuid, filename, link})
+    {
+        console.log(link)
+        if(tmpFile != null) removeFileLinkToServer(tmpFile)
+        const str = `<div class="card col-4">
+                    <div class="card-header d-flex justify-content-center">
+                        ${filename}
+                        <button class="btn-sm btn-danger" onclick="removeFile('${uuid}', '${filename}', this)">X</button>
+                    </div>
+                    <div class="card-body">
+                          <img src="/images/${link}" data-src="${uuid+"_"+filename}">
+                    </div>
+                 </div>`
+        tmpFile = uuid+"_"+filename
+        galleryImage.innerHTML = str
+    }
+
+    function removeFile(uuid, fileName, obj)
+    {
+        console.log(uuid)
+        console.log(fileName)
+        console.log(obj)
+
+        const targetDiv = obj.closest(".card")
+
+        removeFileToServer(uuid, fileName).then(data=>{
+            console.log(data)
+            targetDiv.remove()
+        })
+    }
+
+    let titleCheck = false
+
+    document.querySelector("#title").addEventListener("keyup", function (e) {
+        const title = document.getElementById('title').value
+        if(title.length === 0) return
+        isAvailableTitle(title).then(
+            result =>
+            {
+                titleCheck = result.result
+                document.getElementById("titleInfo").innerHTML = result.errorMessage
+            }
+        )
+    }, false)
+
+    let submitting = false
+    document.querySelector(".submitBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        if(!titleCheck)
+        {
+            alert("Check Your Values")
+            return
+        }
+        submitting = true
+        createGallery(galleryTitle.value, galleryExplanation.value, galleryImage.querySelector("img"))
+            .then(
+                data =>
+                {
+                    self.location = '/gallery/home'
+                }
+            )
+
+    }, false)
+
+    window.onload = needLoginPage
+    window.onbeforeunload = function ()
+    {
+        if(!submitting && tmpFile != null)
+            removeFileLinkToServer(tmpFile)
+    }
+
+</script>

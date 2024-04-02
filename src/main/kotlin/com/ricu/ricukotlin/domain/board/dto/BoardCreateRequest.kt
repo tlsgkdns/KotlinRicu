@@ -9,7 +9,7 @@ data class BoardCreateRequest(
     val content: String,
 )
 {
-    fun to(galleryId: String, galleryRepository: GalleryRepository): Board
+    fun to(galleryId: Long, galleryRepository: GalleryRepository): Board
     {
         return Board(
             title = title,

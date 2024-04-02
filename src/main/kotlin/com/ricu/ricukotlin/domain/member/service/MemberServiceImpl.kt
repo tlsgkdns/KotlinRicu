@@ -4,6 +4,12 @@ import com.ricu.ricukotlin.domain.image.model.Image
 import com.ricu.ricukotlin.domain.member.dto.*
 import com.ricu.ricukotlin.domain.member.repository.MemberRepository
 import com.ricu.ricukotlin.global.exception.exception.AlreadyExistMemberException
+import com.ricu.ricukotlin.global.common.available.AvailableCheckList
+import com.ricu.ricukotlin.global.common.available.checker.DuplicateChecker
+import com.ricu.ricukotlin.global.common.available.checker.LengthChecker
+import com.ricu.ricukotlin.global.common.available.checker.RegexChecker
+import com.ricu.ricukotlin.global.common.available.dto.AvailableRequest
+import com.ricu.ricukotlin.global.common.available.dto.AvailableResponse
 import com.ricu.ricukotlin.global.infra.security.TokenProvider
 import com.ricu.ricukotlin.global.util.RepositoryUtil
 import org.springframework.data.repository.findByIdOrNull
@@ -17,6 +23,21 @@ class MemberServiceImpl(
     private val encoder: PasswordEncoder,
     private val tokenProvider: TokenProvider
 ): MemberService {
+    private val nicknameAvailableCheckList = AvailableCheckList(
+        listOf(
+            DuplicateChecker(memberRepository::existsByNickname),
+            LengthChecker(3, 20),
+            RegexChecker()
+            )
+    )
+    private val usernameAvailableCheckList = AvailableCheckList(
+        listOf(
+            DuplicateChecker(memberRepository::existsByUsername),
+            LengthChecker(3, 20),
+            RegexChecker()
+        )
+    )
+
     @Transactional
     override fun registerMember(memberRegisterRequest: MemberRegisterRequest): MemberResponse {
         memberRepository.findByIdOrNull(memberRegisterRequest.username)
@@ -53,4 +74,13 @@ class MemberServiceImpl(
         val member = RepositoryUtil.getValidatedEntity(memberRepository, memberId)
         memberRepository.delete(member)
     }
+
+    override fun isAvailableNickname(availableRequest: AvailableRequest): AvailableResponse {
+        return nicknameAvailableCheckList.checkValueAvailable(availableRequest.wantCheckValue)
+    }
+
+    override fun isAvailableUsername(availableRequest: AvailableRequest): AvailableResponse {
+       return usernameAvailableCheckList.checkValueAvailable(availableRequest.wantCheckValue)
+    }
+
 }

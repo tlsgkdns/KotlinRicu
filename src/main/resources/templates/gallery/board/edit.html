@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Board Modify</title>
+</head>
+<div layout:fragment="content">
+    <h1 id="galleryTitle">
+
+    </h1>
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Board Modify
+                </div>
+                <div class="card-body">
+                    <div id="boardInfo">
+
+                    </div>
+                    <div class="my-4">
+                        <div class="float-end">
+                            <button type="button" class="btn btn-primary listBtn">List</button>
+                            <button type="button" class="btn btn-secondary editBtn">Modify</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/gallery.js"></script>
+    <script src="/js/board.js"></script>
+</div>
+<script layout:fragment="script" th:inline="javascript">
+    const boardInfo = document.getElementById("boardInfo")
+    const galleryTitle = document.getElementById("galleryTitle")
+    const url = new URL(location.href).searchParams
+    const id = url.get('id')
+    const boardNum = url.get('no')
+    getGallery(id).then(
+        gallery => {
+            galleryTitle.innerHTML = `<a class="text-bg-success" href="/gallery/board/list?id=${id}">
+                    ${gallery.title} Gallery
+            </a>`
+        }
+    )
+    getBoard(id, boardNum).then(
+        board => {
+            if(!board) notExistPage()
+            checkCreator(board.creatorUsername)
+            boardInfo.innerHTML =  `
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Bno</span>
+                        <input type="text" class="form-control" name=bno value="${boardNum}" readonly>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Title</span>
+                        <input type="text" class="form-control" id="boardTitle" value="${board.title}">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Content</span>
+                        <textarea type="text" class="form-control col-sm-5" rows="5" id="boardContent">${board.content}</textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Writer</span>
+                        <input type="text" class="form-control" value="${board.creatorUsername}" name="creatorUsername" readonly>
+                    </div>`
+        }
+    )
+    document.querySelector(".editBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+
+        const title = document.getElementById("boardTitle").value
+        const content = document.getElementById("boardContent").value
+        editBoard(id, boardNum, title, content).then(
+            board => {
+                self.location = `/gallery/board/read?id=${id}&no=${boardNum}`
+            }
+        )
+    }, false)
+</script>
+</html>

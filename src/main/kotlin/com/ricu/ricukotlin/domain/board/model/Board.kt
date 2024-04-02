@@ -17,6 +17,7 @@ class Board (
     @Column(length = 2000, nullable = false)
     var content: String,
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "galleryId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     val gallery: Gallery,
 ): CreatorAuditEntity()
@@ -25,17 +26,18 @@ class Board (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @OneToMany(fetch = FetchType.LAZY)
-    val likeMembers: MutableSet<Member> = mutableSetOf()
+    @ElementCollection
+    val likeMembers: MutableList<String> = mutableListOf()
+
     var view: Long = 0L
-    fun addLike(memberRepository: MemberRepository): Board
+    fun addLike(): Board
     {
-        likeMembers.add(SecurityUtil.getLoginMember(memberRepository))
+        likeMembers.add(SecurityUtil.getUsername())
         return this
     }
-    fun removeLike(memberRepository: MemberRepository): Board
+    fun removeLike(): Board
     {
-        likeMembers.remove(SecurityUtil.getLoginMember(memberRepository))
+        likeMembers.remove(SecurityUtil.getUsername())
         return this
     }
     fun addView(): Board
@@ -43,8 +45,8 @@ class Board (
         ++view
         return this
     }
-    fun didMemberLikeThisBoard(memberRepository: MemberRepository): Boolean
+    fun didMemberLikeThisBoard(): Boolean
     {
-        return likeMembers.contains(SecurityUtil.getLoginMember(memberRepository))
+        return likeMembers.contains(SecurityUtil.getUsername())
     }
 }

@@ -9,7 +9,7 @@ data class MemberRegisterRequest(
     val username: String,
     val email: String,
     val password: String,
-    val profileImageName: String
+    val profileImageName: String?
 )
 {
     fun to(encoder: PasswordEncoder) = Member(

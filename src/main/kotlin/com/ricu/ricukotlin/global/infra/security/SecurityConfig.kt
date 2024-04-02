@@ -18,15 +18,14 @@ class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val authenticationEntryPoint: AuthenticationEntryPoint
 ) {
-    private val allowedUrls = arrayOf("/", "/swagger-ui/**", "/v3/**", "/members/signUp", "/members/signIn")
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain = http
         .csrf { it.disable() }
         .authorizeHttpRequests{ requests ->
-            requests.requestMatchers(*allowedUrls).permitAll()
-            requests.anyRequest().authenticated()
+            requests.requestMatchers("/gallery/home").authenticated()
+                .anyRequest().permitAll()
         }
         .sessionManagement{it.sessionCreationPolicy(STATELESS)}
         .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter::class.java)

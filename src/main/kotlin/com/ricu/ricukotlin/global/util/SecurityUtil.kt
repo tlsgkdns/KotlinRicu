@@ -9,14 +9,23 @@ class SecurityUtil
 {
     companion object
     {
+        private const val ANONYMOUS: String = "anonymous"
         fun getUsername(): String
         {
-            return (SecurityContextHolder.getContext()?.authentication?.principal as? UserDetails)?.username ?: "anonymous"
+            return (SecurityContextHolder.getContext()?.authentication?.principal as? UserDetails)?.username ?: ANONYMOUS
         }
-
         fun getLoginMember(memberRepository: MemberRepository): Member
         {
             return RepositoryUtil.getValidatedEntity(memberRepository, getUsername())
+        }
+        fun isAuthenticated(): Boolean
+        {
+            return getUsername() == ANONYMOUS
+        }
+        fun isSameUser(username: String): Boolean
+        {
+            val loginUsername = getUsername()
+            return loginUsername == username
         }
     }
 }

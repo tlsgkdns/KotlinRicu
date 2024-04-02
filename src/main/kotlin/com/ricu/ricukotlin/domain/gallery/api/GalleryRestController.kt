@@ -3,13 +3,13 @@ package com.ricu.ricukotlin.domain.gallery.api
 import com.ricu.ricukotlin.domain.gallery.dto.GalleryCreateRequest
 import com.ricu.ricukotlin.domain.gallery.dto.GalleryPatchRequest
 import com.ricu.ricukotlin.domain.gallery.dto.GalleryResponse
-import com.ricu.ricukotlin.domain.gallery.dto.GallerySearchKeywordDTO
 import com.ricu.ricukotlin.domain.gallery.service.GalleryService
 import com.ricu.ricukotlin.global.common.PageRequestDTO
-import org.springframework.data.domain.Page
+import com.ricu.ricukotlin.global.common.PageResponseDTO
+import com.ricu.ricukotlin.global.common.available.dto.AvailableRequest
+import com.ricu.ricukotlin.global.common.available.dto.AvailableResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -24,41 +24,45 @@ import org.springframework.web.bind.annotation.RestController
 class GalleryRestController(
     private val galleryService: GalleryService
 ) {
-
     @GetMapping()
-    fun searchGallery(keywordDTO: GallerySearchKeywordDTO, pageRequestDTO: PageRequestDTO)
-        : ResponseEntity<Page<GalleryResponse>>
+    fun searchGallery(pageRequestDTO: PageRequestDTO, keyword: String?)
+        : ResponseEntity<PageResponseDTO<GalleryResponse>>
     {
-        return galleryService.searchGallery(keywordDTO, pageRequestDTO).let {
+        return galleryService.searchGallery(keyword, pageRequestDTO).let {
             ResponseEntity.status(HttpStatus.OK).body(it)
         }
     }
-    @GetMapping("/{galleryUrl}")
-    fun getGallery(@PathVariable galleryUrl: String): ResponseEntity<GalleryResponse>
+    @GetMapping("/{id}")
+    fun getGallery(@PathVariable id: Long): ResponseEntity<GalleryResponse>
     {
-        return galleryService.getGallery(galleryUrl).let {
+        return galleryService.getGallery(id).let {
             ResponseEntity.status(HttpStatus.OK).body(it)
         }
     }
     @PostMapping()
-    fun createGallery(@RequestBody createRequest: GalleryCreateRequest)
+    fun createGallery(@RequestBody createRequest: GalleryCreateRequest): ResponseEntity<GalleryResponse>
     {
         return galleryService.createGallery(createRequest).let {
             ResponseEntity.status(HttpStatus.CREATED).body(it)
         }
     }
-    @PatchMapping("/{galleryUrl}")
-    fun modifyGallery(@PathVariable galleryUrl: String, @RequestBody patchRequest: GalleryPatchRequest)
+    @PatchMapping("/{id}")
+    fun modifyGallery(@PathVariable id: Long, @RequestBody patchRequest: GalleryPatchRequest): ResponseEntity<GalleryResponse>
     {
-        return galleryService.editGalleryInfo(galleryUrl, patchRequest).let {
+        return galleryService.editGalleryInfo(id, patchRequest).let {
             ResponseEntity.status(HttpStatus.OK).body(it)
         }
     }
-    @DeleteMapping("/{galleryUrl}")
-    fun deleteGallery(@PathVariable galleryUrl: String)
+    @DeleteMapping("/{id}")
+    fun deleteGallery(@PathVariable id: Long): ResponseEntity<GalleryResponse>
     {
-        return galleryService.deleteGallery(galleryUrl).let {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(it)
+        return galleryService.deleteGallery(id).let {
+            ResponseEntity.status(HttpStatus.NO_CONTENT).body(it)
         }
+    }
+    @GetMapping("/available/title")
+    fun isAvailableTitle(availableRequest: AvailableRequest): ResponseEntity<AvailableResponse>
+    {
+        return galleryService.availableGalleryTitle(availableRequest).let { ResponseEntity.status(HttpStatus.OK).body(it) }
     }
 }

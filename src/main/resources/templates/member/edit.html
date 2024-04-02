@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link href="/../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div layout:fragment="content">
+    <section style="background-color: #eee;">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-6">
+                        <div class="card-body text-center" id="profileImage">
+                            <
+                        </div>
+                        <div class="d-flex justify-content-center mb-2">
+                            <button class="btn btn-secondary setProfileImageBtn">Change Profile</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-6">
+                        <div class="card-body" id="memberInfo">
+
+                        </div>
+                        <button type="button" class="btn btn-primary submitBtn">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal uploadModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="file" name="file" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary uploadBtn">Upload</button>
+                    <button type="button" class="btn btn-outline-dark closeUploadBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/uploadFile.js"></script>
+    <script src="/js/member.js"></script>
+</div>
+<script layout:fragment="script" th:inline="javascript">
+    const memberId = new URL(location.href).searchParams.get("id")
+    const profileImage = document.getElementById("profileImage")
+    const memberInfo = document.getElementById("memberInfo")
+    let nicknameChecked = true
+    let originProfile = null
+    let tmpFile = null
+    let originNickname = null
+    getMember(memberId).then(
+        member => {
+            if(member.errorCode) notExistPage()
+            checkCreator(member.username)
+            addProfileImage(member)
+            addMemberInfo(member)
+            originNickname = member.nickname
+            addNicknameEvent()
+        }
+    )
+    function addProfileImage(member)
+    {
+        originFile = member.profileImageName
+        if(member.profileImageName)
+            profileImage.innerHTML = `<img
+                 src="/images/${member.profileImageName}"
+                 data-src="${member.profileImageName}" alt="avatar"
+                 class="rounded-circle img-fluid" style="width: 150px;">`
+        else
+            profileImage.innerHTML = ` <img
+             src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+             class="rounded-circle img-fluid" style="width: 150px;">`
+    }
+    function addMemberInfo(member)
+    {
+        memberInfo.innerHTML += `
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">ID</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="text-muted mb-0" id="memberID" value="${member.username}" readonly>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">NickName</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="text-muted mb-0" id="nickname" value="${member.nickname}">
+                                        <button type="button" class="btn btn-info nicknameUniqueCheckBtn">Unique Check</button>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">E-mail</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="text-muted mb-0" id="email" value="${member.email}">
+
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Registration Date</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">${dateFormatting(member.registeredDate)}</p>
+                                    </div>
+                                </div>
+                                <hr>
+          `
+    }
+
+    function addNicknameEvent()
+    {
+        document.getElementById("nickname").addEventListener("change", function (e){
+            e.stopPropagation()
+            e.preventDefault()
+            nicknameChecked = false;
+        })
+        document.querySelector(".nicknameUniqueCheckBtn").addEventListener("click",function (e){
+            const nickname = document.getElementById('nickname').value
+            if(nickname === originNickname)
+            {
+                nicknameChecked = true
+                alert("사용할 수 있습니다.")
+            }
+            else
+            {
+                isAvailableNickname(nickname).then(
+                    result =>
+                    {
+                        nicknameChecked = result.result
+                        alert(result.errorMessage)
+                    }
+                ).catch(e => alert("ERRRRRRRRRRRRRROR"))
+            }
+        })
+    }
+    const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
+    document.querySelector(".setProfileImageBtn").addEventListener("click", function (e){
+        showUploadModal(e, uploadModal)
+    }, false)
+    document.querySelector(".closeUploadBtn").addEventListener("click", function (e){
+        hideUploadModal(e, uploadModal)
+    }, false)
+    document.querySelector(".uploadBtn").addEventListener("click", function (e){
+        uploadImage(document.querySelector("input[name='file']"), showUploadFile)
+    })
+    function showUploadFile({uuid, fileName, link})
+    {
+        console.log(link + "We Have")
+        if(tmpFile != null && originProfile !== tmpFile) removeFileLinkToServer(tmpFile)
+        const str = `<img src="/images/${link}" data-src=${link} alt="avatar"
+                   class="rounded-circle img-fluid" style="width: 150px;">`
+        tmpFile = link
+        profileImage.innerHTML = str
+    }
+    let submitting = false
+    document.querySelector(".submitBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        if(!nicknameChecked)
+        {
+            alert("값을 확인해 주세여.")
+            return
+        }
+        submitting = true
+        if(tmpFile !== originProfile) removeFileLinkToServer(originProfile)
+        const email = document.getElementById("email").value
+        const nickname = document.getElementById("nickname").value
+        editMember(memberId, email, nickname, tmpFile).then(
+            data => {
+                self.location = `/member/info?id=${memberId}`
+            }
+        )
+    }, false)
+
+    window.onbeforeunload = function ()
+    {
+        if(!submitting && tmpFile && tmpFile !== originProfile)
+            removeFileLinkToServer(tmpFile)
+    }
+    function dateFormatting(date)
+    {
+        return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
+    }
+</script>
+</html>
+

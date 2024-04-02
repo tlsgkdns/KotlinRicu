@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface GalleryRepository: JpaRepository<Gallery, String>, QueryDslGalleryRepository
+interface GalleryRepository: JpaRepository<Gallery, Long>, QueryDslGalleryRepository
+{
+    fun existsByTitle(title: String): Boolean
+}

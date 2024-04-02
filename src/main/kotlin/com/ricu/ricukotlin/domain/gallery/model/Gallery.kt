@@ -7,9 +7,6 @@ import jakarta.persistence.*
 
 @Entity
 class Gallery(
-    @Id
-    @Column(length = 30)
-    val galleryUrl: String,
     @Column(length = 500)
     var explanation: String,
     @Column(length = 30)
@@ -19,5 +16,7 @@ class Gallery(
     var galleryImage: Image? = null,
 ): CreatorAuditEntity()
 {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val galleryId: Long? = 0L
 }

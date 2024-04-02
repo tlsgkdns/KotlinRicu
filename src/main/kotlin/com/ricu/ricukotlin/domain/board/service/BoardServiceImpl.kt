@@ -3,11 +3,16 @@ package com.ricu.ricukotlin.domain.board.service
 import com.ricu.ricukotlin.domain.board.dto.BoardCreateRequest
 import com.ricu.ricukotlin.domain.board.dto.BoardModifyRequest
 import com.ricu.ricukotlin.domain.board.dto.BoardResponse
+import com.ricu.ricukotlin.domain.board.dto.BoardSearchRequest
+import com.ricu.ricukotlin.domain.board.model.Board
 import com.ricu.ricukotlin.domain.board.repository.BoardRepository
 import com.ricu.ricukotlin.domain.gallery.repository.GalleryRepository
 import com.ricu.ricukotlin.domain.member.repository.MemberRepository
+import com.ricu.ricukotlin.global.common.PageRequestDTO
+import com.ricu.ricukotlin.global.common.PageResponseDTO
 import com.ricu.ricukotlin.global.util.RepositoryUtil
 import com.ricu.ricukotlin.global.util.SecurityUtil
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,9 +23,9 @@ class BoardServiceImpl(
     private val memberRepository: MemberRepository
 ): BoardService {
     @Transactional
-    override fun writeBoard(galleryId: String, boardRequest: BoardCreateRequest): BoardResponse {
-        return boardRequest.to(galleryId, galleryRepository).let { boardRepository.save(it) }
-            .let { BoardResponse.from(it) }
+    override fun writeBoard(galleryId: Long, boardRequest: BoardCreateRequest): BoardResponse {
+        val writeBoard = boardRequest.to(galleryId, galleryRepository).let { boardRepository.save(it) }
+        return BoardResponse.from(writeBoard)
     }
 
     @Transactional
@@ -53,19 +58,22 @@ class BoardServiceImpl(
     }
 
     @Transactional
-    override fun addLike(bno: Long): BoardResponse {
-        return RepositoryUtil.getValidatedEntity(boardRepository, bno).addLike(memberRepository).let {
-            boardRepository.save(it)
-            BoardResponse.from(it)
-        }
+    override fun clickLike(bno: Long): BoardResponse {
+        val board = RepositoryUtil.getValidatedEntity(boardRepository, bno)
+        if (board.didMemberLikeThisBoard()) board.removeLike()
+        else board.addLike()
+        boardRepository.save(board)
+        return board.let { BoardResponse.from(it) }
     }
 
-    @Transactional
-    override fun removeLike(bno: Long): BoardResponse {
-        return RepositoryUtil.getValidatedEntity(boardRepository, bno).removeLike(memberRepository).let {
-            boardRepository.save(it)
-            BoardResponse.from(it)
-        }
+    override fun getBoards(galleryId: Long, boardSearchRequest: BoardSearchRequest,
+                           pageRequestDTO: PageRequestDTO): PageResponseDTO<BoardResponse> {
+        val boardPages = boardRepository.searchBoard(
+            galleryId = galleryId,
+            boardSearchRequest = boardSearchRequest,
+            pageable = pageRequestDTO.getPageable()
+        )
+        val content = boardPages.content.map { BoardResponse.from(it) }
+        return PageResponseDTO.of(pageRequestDTO, content, boardPages.totalElements.toInt())
     }
-
 }

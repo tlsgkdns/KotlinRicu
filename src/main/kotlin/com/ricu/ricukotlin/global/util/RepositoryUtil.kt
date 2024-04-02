@@ -5,9 +5,6 @@ import com.ricu.ricukotlin.global.exception.exception.ModelNotFoundException
 import com.ricu.ricukotlin.global.exception.exception.NotHaveAuthorityException
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
-import kotlin.reflect.jvm.jvmName
 
 class RepositoryUtil {
     companion object
@@ -15,7 +12,7 @@ class RepositoryUtil {
         fun <T, ID> getValidatedEntity(repository: JpaRepository<T, ID>, entityId: ID): T
         {
             val entity = repository.findByIdOrNull(entityId)
-                ?: throw ModelNotFoundException(repository.javaClass.typeName, entityId.toString())
+                ?: throw ModelNotFoundException(repository.javaClass.genericSuperclass.typeName, entityId.toString())
             return entity
         }
 
@@ -23,7 +20,8 @@ class RepositoryUtil {
         {
             val entity = getValidatedEntity(repository, entityID)
             if(entity !is CreatorAuditEntity) throw IllegalArgumentException("잘못된 엔티티입니다.")
-            if((entity as CreatorAuditEntity).creator?.username != SecurityUtil.getUsername())
+            val creatorEntity = (entity as CreatorAuditEntity)
+            if(creatorEntity.creator?.username != SecurityUtil.getUsername())
                 throw NotHaveAuthorityException(SecurityUtil.getUsername(), entity.javaClass.typeName)
             return entity
         }

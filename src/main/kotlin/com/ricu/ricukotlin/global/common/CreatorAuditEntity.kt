@@ -12,6 +12,6 @@ abstract class CreatorAuditEntity: BaseTimeEntity()
 {
     @ManyToOne(fetch = FetchType.LAZY)
     @CreatedBy
-    @JoinColumn(name = "creator")
+    @JoinColumn(name = "creator", referencedColumnName = "username")
     open var creator: Member? = null
 }

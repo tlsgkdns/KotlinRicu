@@ -5,6 +5,7 @@ import com.ricu.ricukotlin.domain.comment.dto.CommentRequest
 import com.ricu.ricukotlin.domain.comment.dto.CommentResponse
 import com.ricu.ricukotlin.domain.comment.service.CommentService
 import com.ricu.ricukotlin.global.common.PageRequestDTO
+import com.ricu.ricukotlin.global.common.PageResponseDTO
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -50,8 +51,13 @@ class CommentRestController(
     }
 
     @GetMapping()
-    fun getComments(@PathVariable boardId: Long, pageRequestDTO: PageRequestDTO): ResponseEntity<Page<CommentResponse>>
+    fun getComments(@PathVariable boardId: Long, pageRequestDTO: PageRequestDTO): ResponseEntity<PageResponseDTO<CommentResponse>>
     {
         return commentService.getComments(boardId, pageRequestDTO).let { ResponseEntity.status(HttpStatus.OK).body(it) }
+    }
+    @GetMapping("/count", params = [])
+    fun getCommentCount(@PathVariable boardId: Long): ResponseEntity<Int>
+    {
+        return commentService.getCommentCount(boardId).let { ResponseEntity.status(HttpStatus.OK).body(it) }
     }
 }

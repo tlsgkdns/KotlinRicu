@@ -3,7 +3,10 @@ package com.ricu.ricukotlin.domain.board.api
 import com.ricu.ricukotlin.domain.board.dto.BoardCreateRequest
 import com.ricu.ricukotlin.domain.board.dto.BoardModifyRequest
 import com.ricu.ricukotlin.domain.board.dto.BoardResponse
+import com.ricu.ricukotlin.domain.board.dto.BoardSearchRequest
 import com.ricu.ricukotlin.domain.board.service.BoardService
+import com.ricu.ricukotlin.global.common.PageRequestDTO
+import com.ricu.ricukotlin.global.common.PageResponseDTO
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-@RequestMapping("/galleries/{galleryId}")
+@RequestMapping("/galleries/{galleryId}/boards")
 class BoardRestController(
     private val boardService: BoardService
 ) {
@@ -28,7 +31,7 @@ class BoardRestController(
         return boardService.readBoard(boardId).let { ResponseEntity.status(HttpStatus.OK).body(it) }
     }
     @PostMapping()
-    fun writeBoard(@PathVariable galleryId: String, @RequestBody boardCreateRequest: BoardCreateRequest): ResponseEntity<BoardResponse>
+    fun writeBoard(@PathVariable galleryId: Long, @RequestBody boardCreateRequest: BoardCreateRequest): ResponseEntity<BoardResponse>
     {
         return boardService.writeBoard(galleryId, boardCreateRequest).let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
     }
@@ -45,19 +48,22 @@ class BoardRestController(
         return boardService.removeBoard(boardId).let { ResponseEntity.status(HttpStatus.NO_CONTENT).build() }
     }
 
-    @PostMapping("/{boardId}/like")
-    fun addLike(@PathVariable boardId: Long): ResponseEntity<BoardResponse>
+    @GetMapping("/")
+    fun searchBoard(@PathVariable galleryId: Long, pageRequestDTO: PageRequestDTO
+                    , boardSearchRequest: BoardSearchRequest): ResponseEntity<PageResponseDTO<BoardResponse>>
     {
-        return boardService.addLike(boardId).let { ResponseEntity.status(HttpStatus.OK).build() }
+        return boardService.getBoards(galleryId, boardSearchRequest, pageRequestDTO).let {
+            ResponseEntity.status(HttpStatus.OK).body(it)
+        }
     }
-    @PostMapping("/{boardId}/view")
+    @PatchMapping("/{boardId}/like")
+    fun clickLike(@PathVariable boardId: Long): ResponseEntity<BoardResponse>
+    {
+        return boardService.clickLike(boardId).let { ResponseEntity.status(HttpStatus.OK).build() }
+    }
+    @PatchMapping("/{boardId}/view")
     fun addView(@PathVariable boardId: Long): ResponseEntity<BoardResponse>
     {
         return boardService.addView(boardId).let { ResponseEntity.status(HttpStatus.OK).build() }
-    }
-    @DeleteMapping("/{boardId}/like")
-    fun removeLike(@PathVariable boardId: Long): ResponseEntity<BoardResponse>
-    {
-        return boardService.removeLike(boardId).let { ResponseEntity.status(HttpStatus.OK).build() }
     }
 }

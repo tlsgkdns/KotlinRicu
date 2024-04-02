@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<div layout:fragment="content">
+    <div>
+        <h1 id="galleryTitle"></h1>
+    </div>
+    <hr class="featurette-divider">
+    <div>
+        <h1 class="fw-bold" id="boardTitle"></h1>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div id="boardWriter"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-hand-thumbs-up my-1" viewBox="0 0 16 16">
+            <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z"/>
+        </svg>
+            <span id="likeCountHeadTxt">
+            </span>
+            <div class="float-end" id="boardCreatedTime">
+            </div>
+        </div>
+        <div class="card-body">
+            <br>
+            <div id = "boardContent">
+
+            </div>
+            <br><br><br><br><br><br><br><br>
+            <div class="offset-5">
+                <button class="btn btn-success likeBtn"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-hand-thumbs-up my-1" viewBox="0 0 16 16">
+                    <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z"/>
+                </svg>&nbsp;<span style="size: 50px"><h3 id="likeCountBtnTxt"></h3></span></button>
+            </div>
+            <div class="my-4" id="boardBtns">
+            </div>
+        </div>
+    </div>
+
+    <h2 class="my-3">We have <span class="commentCnt"></span> Comments</h2>
+    <div class="commentCnt"></div>
+    <hr class="featurette-divider">
+    <div class="card row mt-3">
+        <div class="card-header">
+            Comment
+            <a class="float-end commentRefresh">Refresh</a>
+        </div>
+        <div class="card-body col-md-12">
+            <ul class="list-group commentList">
+            </ul>
+            <div class="row mt-3">
+                <div class="col">
+                    <ul class="pagination commentPaging">
+                    </ul>
+                </div>
+            </div>
+            <div class="my-4" id="comment">
+                <textarea type="text" placeholder="Write Your Comment on the Board" class="form-control col-sm-5 commentText" rows="5"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="my-5" th:insert="~{/fragment/boardListFragment::boardList()}">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/js/comment.js"></script>
+    <script type="module" src="/js/board.js"></script>
+    <script type="module" src="/js/gallery.js"></script>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    const url = new URL(location.href).searchParams
+    const gid = url.get("id")
+    const boardNum = url.get("no")
+    const boardPage = url.get("page")
+    const commentList = document.querySelector(".commentList")
+    const commentPaging = document.querySelector(".commentPaging")
+    const boardBtns = document.getElementById("boardBtns")
+    const commentText = document.querySelector(".commentText")
+
+    isAuthenticated().then(
+        data => {
+            if(data)
+            {
+                getLoginUsername().then(
+                    username => {
+                        document.getElementById("comment").innerHTML += `
+                <input type="text" class="form-control commentWriter" value="${username}" readonly>
+                <button type="submit" class="float-end btn btn-info my-3 addCommentBtn">ADD COMMENT</button>`
+                        document.querySelector(".addCommentBtn").addEventListener("click", function (e){
+                            addComment(gid, boardNum, document.querySelector(".commentText").value).then(result =>{
+                                commentText.value = ''
+                                printComments(1, 10, true)
+                                showCommentCount()
+                            }).catch(e =>{
+                                alert("Exception.....!")
+                            })
+                        }, false)
+                    }
+
+                )
+            }
+        }
+    )
+
+    getGallery(gid).then(
+        gallery => {
+            if(gallery.errorCode) notExistPage()
+            document.getElementById("galleryTitle").innerHTML +=
+                `<a class="text-bg-success" href="/gallery/board/list?id=${gid}">${gallery.title} Gallery</a>`
+        }
+    )
+    getBoard(gid, boardNum).then(
+        board => {
+            if(board.errorCode) notExistPage()
+            console.log(board.createdTime)
+                boardBtns.innerHTML += ` <div class="float-end">
+                    <a href="/gallery/board/list?id=${gid}&page=${boardPage}" class="text-decoration-none">
+                        <button type="button" class="btn btn-primary">List</button>
+                    </a>`
+                isAuthenticated().then(
+                    data => {
+                        if(data)
+                        {
+                            getLoginUsername().then(
+                                username => {
+                                    if(board.creatorUsername === username)
+                                    {
+                                        boardBtns.innerHTML += `<a class="text-decoration-none">
+                                    <button type="button" class="btn btn-danger removeBtn" onclick="removeBoard()">Remove</button>
+                                    </a>`
+                                        boardBtns.innerHTML +=  `<a class="text-decoration-none">
+                                        <button type="button" class="btn btn-secondary" onclick="getEditBoardPage()">Modify</button>
+                                         </a>`
+                                    }
+                                    boardBtns.innerHTML += `</div>`
+
+                                }
+                            )
+                        }
+                    }
+                )
+
+            document.getElementById("likeCountBtnTxt").innerHTML += `Like: ${board.likeCount}`
+            document.getElementById("likeCountHeadTxt").innerHTML += `${board.likeCount}`
+            document.getElementById("boardTitle").innerHTML += `${board.title}`
+            document.getElementById("boardWriter").innerHTML += `Writer: ${board.creatorUsername} |`
+            let contentLine = ''
+            for(const line of board.content.split('\n'))
+                contentLine += line + `<br>`
+            document.getElementById("boardContent").innerHTML += contentLine
+            document.getElementById("boardCreatedTime").innerHTML += dateFormat(board.createdTime)
+        }
+    )
+    function removeBoard()
+    {
+        deleteBoard(gid, boardNum).then(
+            data=>{
+                location.href = `/gallery/board/list?id=${gid}`
+            }
+        )
+    }
+    function getEditBoardPage()
+    {
+        location.href = `/gallery/board/edit?id=${gid}&no=${boardNum}`
+    }
+    async function printCommentList(dtoList)
+    {
+        let str = '';
+        if(dtoList && dtoList.length > 0)
+        {
+            for(const comm of dtoList)
+            {
+                str += `<li class="list-group-item d-flex commentItem container">`
+                if(comm.writerProfileImage)
+                {
+                    console.log(comm.writerProfileImage)
+                    str += `<img src="/images/${comm.writerProfileImage}" alt="avatar"
+                                class="rounded-circle img-fluid" style="width: 50px; height: 50px">`
+                }else{
+                    str += `<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                            class="rounded-circle img-fluid" style="width: 50px; height: 50px">`
+                }
+                await getLoginUsername().then(username =>{
+                        str += `<span class="col-2 h3"><a href="/member/info?username=${comm.writerUsername}&searchGallery=${gid}">${comm.writerNickname}</a></span>
+                    <span class="col-6 h2">${comm.commentText}</span>
+                    <span class="col-3">${dateFormat(comm.createdTime)}</span>`
+                        if(comm.writerUsername === username)
+                            str += `<div>
+                            <button type="button" class="btn btn-danger"
+                                onClick="removeCommentFunction(${comm.commentId})">Delete
+                            </button>
+                            </div>
+                        `
+                        str += `</li>`
+                }
+                )
+            }
+
+        }
+        commentList.innerHTML = str
+    }
+
+    function removeCommentFunction(id)
+    {
+        removeComment(gid, boardNum, id).then(
+            result => {
+                alert(id + ' comment deleted')
+                document.querySelector(".commentText").value=''
+                page = 1
+                showCommentCount()
+                printComments(page, size)
+            }).catch(e => {
+            console.log(e)
+        })
+    }
+    function printPages(data)
+    {
+        let pageStr = '';
+        if(data.prev)
+        {
+            pageStr += `<li class="page-item"><a class="page-link" comment-page="${data.start - 1}">PREV</a></li>`
+        }
+        for(let i = data.start; i <= data.end; i++)
+        {
+            pageStr += `<li class="page-item ${i === data.page? "active" : ""} "><a class="page-link" comment-page="${i}">${i}</a></li>`
+        }
+        if(data.next)
+        {
+            pageStr += `<li class="page-item"><a class="page-link" comment-page="${data.end + 1}">NEXT</a></li>`
+        }
+        commentPaging.innerHTML = pageStr
+    }
+
+    function printComments(page, size, goLast)
+    {
+        getList(gid, boardNum, page, size, goLast).then(
+            data =>{
+                console.log(data)
+                printCommentList(data.dtoList)
+                printPages(data)
+            }
+        ).catch(e => {
+            console.error(e)
+        })
+    }
+    printComments(1, 10)
+    showCommentCount()
+    let commentPage = 1
+    let commentSize = 10
+    commentPaging.addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+        if(!target || target.tagName != 'A')
+        {
+            return
+        }
+        const pageNum = target.getAttribute("comment-page")
+        commentPage = pageNum
+        printComments(commentPage, commentSize)
+    }, false)
+
+    function showCommentCount()
+    {
+        getCommentCount(gid, boardNum).then(
+            data => document.getElementsByClassName("commentCnt")[0].innerText = data
+        ).catch(e =>{
+            alert("Exception Alert!!!!!")
+        })
+    }
+
+    document.querySelector(".commentRefresh").addEventListener("click", function (e){
+        printComments(page, size);
+        showCommentCount();
+    })
+
+
+    document.querySelector(".likeBtn").addEventListener("click", function (e){
+        clickLike(gid, boardNum).then(
+            data => {
+                refreshBoard()
+            }
+        ).catch(e => {
+            alert("ERROR!! " + e)
+        })
+    })
+
+    function refreshBoard()
+    {
+        getBoard(gid, boardNum).then(
+            data =>
+            {
+                document.getElementById("likeCountHeadTxt").innerText = data.likeCount
+                document.getElementById("likeCountBtnTxt").innerText = "Like: " + data.likeCount
+            }
+        ).catch(e => alert("Error while refreshing..."))
+    }
+</script>
+</html>

@@ -4,6 +4,7 @@ import com.ricu.ricukotlin.domain.comment.dto.CommentRequest
 import com.ricu.ricukotlin.domain.comment.dto.CommentResponse
 import com.ricu.ricukotlin.domain.comment.repository.CommentRepository
 import com.ricu.ricukotlin.global.common.PageRequestDTO
+import com.ricu.ricukotlin.global.common.PageResponseDTO
 import com.ricu.ricukotlin.global.util.RepositoryUtil
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -36,9 +37,11 @@ class CommentServiceImpl(
             .let { CommentResponse.from(it) }
     }
 
-    override fun getComments(boardId: Long, pageRequestDTO: PageRequestDTO): Page<CommentResponse> {
-        return commentRepository.getCommentsByBoardId(boardId, pageRequestDTO.getPageable()).map {
-            CommentResponse.from(it)
-        }
+    override fun getComments(boardId: Long, pageRequestDTO: PageRequestDTO): PageResponseDTO<CommentResponse> {
+        val commentPage = commentRepository.getCommentsByBoardId(boardId, pageRequestDTO.getPageable())
+        return PageResponseDTO.of(pageRequestDTO, commentPage.content.map { CommentResponse.from(it) }, commentPage.totalElements.toInt())
+    }
+    override fun getCommentCount(boardId: Long): Int {
+        return commentRepository.countByBoardId(boardId)
     }
 }

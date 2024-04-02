@@ -2,6 +2,10 @@ package com.ricu.ricukotlin.domain.member.api
 
 import com.ricu.ricukotlin.domain.member.dto.*
 import com.ricu.ricukotlin.domain.member.service.MemberService
+import com.ricu.ricukotlin.global.common.available.dto.AvailableRequest
+import com.ricu.ricukotlin.global.common.available.dto.AvailableResponse
+import com.ricu.ricukotlin.global.util.SecurityUtil
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -22,7 +26,7 @@ class MemberRestController(
     fun getMember(@PathVariable memberId: String): ResponseEntity<MemberResponse>
     {
         return memberService.getMember(memberId)
-            .let { ResponseEntity.status(HttpStatus.FOUND).body(it) }
+            .let { ResponseEntity.status(HttpStatus.OK).body(it) }
     }
 
     @PostMapping("/signUp")
@@ -51,5 +55,21 @@ class MemberRestController(
     {
         return memberService.withdrawMember(memberId)
             .let { ResponseEntity.status(HttpStatus.NOT_FOUND).build() }
+    }
+    @GetMapping("/username")
+    fun getLoginMemberUsername(): ResponseEntity<String>
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(SecurityUtil.getUsername())
+    }
+    @GetMapping("/available/nickname")
+    fun isAvailableNickname(availableRequest: AvailableRequest): ResponseEntity<AvailableResponse>
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.isAvailableNickname(availableRequest))
+    }
+
+    @GetMapping("/available/username")
+    fun isAvailableUsername(availableRequest: AvailableRequest): ResponseEntity<AvailableResponse>
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.isAvailableUsername(availableRequest))
     }
 }
