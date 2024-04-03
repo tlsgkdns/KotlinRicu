@@ -12,14 +12,13 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
-@PropertySource("classpath:jwt.yml")
 @Service
 class TokenProvider (
-    @Value("\${secret-key}")
+    @Value("\${auth.jwt.secret-key}")
     private val secretKey: String,
-    @Value("\${expiration-hours}")
+    @Value("\${auth.jwt.expiration-hours}")
     private val expirationHours: Long,
-    @Value("\${issuer}")
+    @Value("\${auth.jwt.issuer}")
     private val issuer: String,
 )
 {

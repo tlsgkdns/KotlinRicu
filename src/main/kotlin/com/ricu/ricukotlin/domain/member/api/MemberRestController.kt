@@ -50,7 +50,7 @@ class MemberRestController(
     }
 
     @DeleteMapping("/{memberId}")
-    fun withdrawMember(@PathVariable memberId: String): ResponseEntity<UInt>
+    fun withdrawMember(@PathVariable memberId: String): ResponseEntity<Long>
     {
         return memberService.withdrawMember(memberId)
             .let { ResponseEntity.status(HttpStatus.NOT_FOUND).build() }
