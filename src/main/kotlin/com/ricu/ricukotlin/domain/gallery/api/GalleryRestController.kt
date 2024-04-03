@@ -1,7 +1,7 @@
 package com.ricu.ricukotlin.domain.gallery.api
 
 import com.ricu.ricukotlin.domain.gallery.dto.GalleryCreateRequest
-import com.ricu.ricukotlin.domain.gallery.dto.GalleryPatchRequest
+import com.ricu.ricukotlin.domain.gallery.dto.GalleryEditRequest
 import com.ricu.ricukotlin.domain.gallery.dto.GalleryResponse
 import com.ricu.ricukotlin.domain.gallery.service.GalleryService
 import com.ricu.ricukotlin.global.common.PageRequestDTO
@@ -47,17 +47,17 @@ class GalleryRestController(
         }
     }
     @PatchMapping("/{id}")
-    fun modifyGallery(@PathVariable id: Long, @RequestBody patchRequest: GalleryPatchRequest): ResponseEntity<GalleryResponse>
+    fun editGallery(@PathVariable id: Long, @RequestBody galleryEditRequest: GalleryEditRequest): ResponseEntity<GalleryResponse>
     {
-        return galleryService.editGalleryInfo(id, patchRequest).let {
+        return galleryService.editGalleryInfo(id, galleryEditRequest).let {
             ResponseEntity.status(HttpStatus.OK).body(it)
         }
     }
     @DeleteMapping("/{id}")
-    fun deleteGallery(@PathVariable id: Long): ResponseEntity<GalleryResponse>
+    fun deleteGallery(@PathVariable id: Long): ResponseEntity<Long>
     {
         return galleryService.deleteGallery(id).let {
-            ResponseEntity.status(HttpStatus.NO_CONTENT).body(it)
+            ResponseEntity.status(HttpStatus.NO_CONTENT).build()
         }
     }
     @GetMapping("/available/title")

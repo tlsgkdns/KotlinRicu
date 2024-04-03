@@ -8,7 +8,7 @@ interface MemberService {
     fun registerMember(memberRegisterRequest: MemberRegisterRequest): MemberResponse
     fun signIn(memberSignInRequest: MemberSignInRequest): MemberSignInResponse
     fun getMember(memberId: String): MemberResponse
-    fun editMember(memberId: String, memberModifyRequest: MemberModifyRequest): MemberResponse
+    fun editMember(memberId: String, memberEditRequest: MemberEditRequest): MemberResponse
     fun withdrawMember(memberId: String)
     fun isAvailableNickname(availableRequest: AvailableRequest) : AvailableResponse
     fun isAvailableUsername(availableRequest: AvailableRequest) : AvailableResponse

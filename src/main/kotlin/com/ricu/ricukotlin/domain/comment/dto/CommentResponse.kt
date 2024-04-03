@@ -1,7 +1,6 @@
 package com.ricu.ricukotlin.domain.comment.dto
 
 import com.ricu.ricukotlin.domain.comment.model.Comment
-import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 
 data class CommentResponse (
@@ -25,7 +24,7 @@ data class CommentResponse (
                 writerUsername = it.creator?.username!!,
                 writerProfileImage = it.creator?.profileImage?.getLink(),
                 writerNickname = it.creator?.nickname,
-                createdTime = it.createdTime.toLocalDateTime()
+                createdTime = it.createdAt.toLocalDateTime()
             )
         }
     }

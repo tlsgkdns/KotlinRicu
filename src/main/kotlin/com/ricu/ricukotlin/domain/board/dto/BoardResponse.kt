@@ -2,8 +2,6 @@ package com.ricu.ricukotlin.domain.board.dto
 
 import com.ricu.ricukotlin.domain.board.model.Board
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 data class BoardResponse(
     val galleryId: Long,
@@ -28,7 +26,7 @@ data class BoardResponse(
                 creatorUsername = board.creator?.username!!,
                 views = board.view,
                 likeCount = board.likeMembers.size,
-                createdTime = board.createdTime.toLocalDateTime()
+                createdTime = board.createdAt.toLocalDateTime()
             )
         }
     }

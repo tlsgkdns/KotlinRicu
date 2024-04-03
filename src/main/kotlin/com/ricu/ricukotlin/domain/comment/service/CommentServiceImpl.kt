@@ -30,7 +30,7 @@ class CommentServiceImpl(
         commentRepository.delete(comment)
     }
     @Transactional
-    override fun modifyCommentText(commentId: Long, commentRequest: CommentRequest): CommentResponse {
+    override fun editCommentText(commentId: Long, commentRequest: CommentRequest): CommentResponse {
         return RepositoryUtil.getValidatedEntityWithAuthority(commentRepository, commentId)
             .apply { this.commentText = commentRequest.commentText }
             .let { commentRepository.save(it) }

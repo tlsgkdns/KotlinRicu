@@ -1,15 +1,12 @@
 package com.ricu.ricukotlin.domain.comment.api
 
-import com.ricu.ricukotlin.domain.board.dto.BoardModifyRequest
 import com.ricu.ricukotlin.domain.comment.dto.CommentRequest
 import com.ricu.ricukotlin.domain.comment.dto.CommentResponse
 import com.ricu.ricukotlin.domain.comment.service.CommentService
 import com.ricu.ricukotlin.global.common.PageRequestDTO
 import com.ricu.ricukotlin.global.common.PageResponseDTO
-import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -40,12 +37,12 @@ class CommentRestController(
     }
 
     @PatchMapping("/{commentId}")
-    fun modifyComment(@PathVariable commentId: Long, @RequestBody modifyRequest: CommentRequest): ResponseEntity<CommentResponse>
+    fun editComment(@PathVariable commentId: Long, @RequestBody editCommentRequest: CommentRequest): ResponseEntity<CommentResponse>
     {
-        return commentService.modifyCommentText(commentId, modifyRequest).let { ResponseEntity.status(HttpStatus.OK).body(it) }
+        return commentService.editCommentText(commentId, editCommentRequest).let { ResponseEntity.status(HttpStatus.OK).body(it) }
     }
     @DeleteMapping("/{commentId}")
-    fun deleteComment(@PathVariable commentId: Long): ResponseEntity<UInt>
+    fun deleteComment(@PathVariable commentId: Long): ResponseEntity<Long>
     {
         return commentService.removeComment(commentId).let { ResponseEntity.status(HttpStatus.NO_CONTENT).build() }
     }

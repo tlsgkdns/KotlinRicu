@@ -5,7 +5,6 @@ import com.ricu.ricukotlin.domain.member.service.MemberService
 import com.ricu.ricukotlin.global.common.available.dto.AvailableRequest
 import com.ricu.ricukotlin.global.common.available.dto.AvailableResponse
 import com.ricu.ricukotlin.global.util.SecurityUtil
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -43,10 +42,10 @@ class MemberRestController(
     }
 
     @PatchMapping("/{memberId}")
-    fun modifyMember(@PathVariable memberId: String, @RequestBody memberModifyRequest: MemberModifyRequest)
+    fun editMember(@PathVariable memberId: String, @RequestBody memberEditRequest: MemberEditRequest)
     : ResponseEntity<MemberResponse>
     {
-        return memberService.editMember(memberId, memberModifyRequest)
+        return memberService.editMember(memberId, memberEditRequest)
             .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
     }
 

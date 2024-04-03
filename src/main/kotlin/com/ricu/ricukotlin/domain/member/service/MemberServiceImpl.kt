@@ -61,11 +61,11 @@ class MemberServiceImpl(
     }
 
     @Transactional
-    override fun editMember(memberId: String, memberModifyRequest: MemberModifyRequest): MemberResponse {
+    override fun editMember(memberId: String, memberEditRequest: MemberEditRequest): MemberResponse {
         return RepositoryUtil.getValidatedEntity(memberRepository, memberId)
-            .apply { this.email = memberModifyRequest.email ?: this.email }
-            .apply { this.nickname = memberModifyRequest.nickname ?: this.nickname}
-            .apply { this.profileImage = memberModifyRequest.profileImage?.let { Image.from(it) } ?: this.profileImage }
+            .apply { this.email = memberEditRequest.email ?: this.email }
+            .apply { this.nickname = memberEditRequest.nickname ?: this.nickname}
+            .apply { this.profileImage = memberEditRequest.profileImage?.let { Image.from(it) } ?: this.profileImage }
             .let { MemberResponse.from(it) }
     }
 

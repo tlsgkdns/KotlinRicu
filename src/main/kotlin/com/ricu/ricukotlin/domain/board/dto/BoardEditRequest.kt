@@ -1,6 +1,6 @@
 package com.ricu.ricukotlin.domain.board.dto
 
-data class BoardModifyRequest(
+data class BoardEditRequest(
     val title: String,
     val content: String
 )

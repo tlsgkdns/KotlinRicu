@@ -10,5 +10,5 @@ import java.time.ZonedDateTime
 abstract class BaseTimeEntity {
     @CreationTimestamp
     @Column(nullable = false)
-    open var createdTime: ZonedDateTime = ZonedDateTime.now()
+    open var createdAt: ZonedDateTime = ZonedDateTime.now()
 }

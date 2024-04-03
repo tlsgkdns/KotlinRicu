@@ -24,8 +24,7 @@ class SecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain = http
         .csrf { it.disable() }
         .authorizeHttpRequests{ requests ->
-            requests.requestMatchers("/gallery/home").authenticated()
-                .anyRequest().permitAll()
+            requests.anyRequest().permitAll()
         }
         .sessionManagement{it.sessionCreationPolicy(STATELESS)}
         .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter::class.java)

@@ -1,7 +1,7 @@
 package com.ricu.ricukotlin.domain.board.api
 
 import com.ricu.ricukotlin.domain.board.dto.BoardCreateRequest
-import com.ricu.ricukotlin.domain.board.dto.BoardModifyRequest
+import com.ricu.ricukotlin.domain.board.dto.BoardEditRequest
 import com.ricu.ricukotlin.domain.board.dto.BoardResponse
 import com.ricu.ricukotlin.domain.board.dto.BoardSearchRequest
 import com.ricu.ricukotlin.domain.board.service.BoardService
@@ -9,7 +9,6 @@ import com.ricu.ricukotlin.global.common.PageRequestDTO
 import com.ricu.ricukotlin.global.common.PageResponseDTO
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -37,13 +36,13 @@ class BoardRestController(
     }
 
     @PatchMapping("/{boardId}")
-    fun modifyBoard(@PathVariable boardId: Long, @RequestBody boardModifyRequest: BoardModifyRequest)
+    fun editBoard(@PathVariable boardId: Long, @RequestBody boardEditRequest: BoardEditRequest)
     : ResponseEntity<BoardResponse>
     {
-        return boardService.modifyBoard(boardId, boardModifyRequest).let { ResponseEntity.status(HttpStatus.OK).body(it) }
+        return boardService.editBoard(boardId, boardEditRequest).let { ResponseEntity.status(HttpStatus.OK).body(it) }
     }
     @DeleteMapping("/{boardId}")
-    fun deleteBoard(@PathVariable boardId: Long): ResponseEntity<UInt>
+    fun deleteBoard(@PathVariable boardId: Long): ResponseEntity<Long>
     {
         return boardService.removeBoard(boardId).let { ResponseEntity.status(HttpStatus.NO_CONTENT).build() }
     }

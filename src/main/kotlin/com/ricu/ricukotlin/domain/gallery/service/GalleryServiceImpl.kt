@@ -1,7 +1,7 @@
 package com.ricu.ricukotlin.domain.gallery.service
 
 import com.ricu.ricukotlin.domain.gallery.dto.GalleryCreateRequest
-import com.ricu.ricukotlin.domain.gallery.dto.GalleryPatchRequest
+import com.ricu.ricukotlin.domain.gallery.dto.GalleryEditRequest
 import com.ricu.ricukotlin.domain.gallery.dto.GalleryResponse
 import com.ricu.ricukotlin.domain.gallery.repository.GalleryRepository
 import com.ricu.ricukotlin.domain.image.model.Image
@@ -36,18 +36,17 @@ class GalleryServiceImpl(
         return RepositoryUtil.getValidatedEntity(galleryRepository, id).galleryImage?.getLink()
     }
     @Transactional
-    override fun editGalleryInfo(id: Long, galleryPatchRequest: GalleryPatchRequest): GalleryResponse {
+    override fun editGalleryInfo(id: Long, galleryEditRequest: GalleryEditRequest): GalleryResponse {
         return RepositoryUtil.getValidatedEntityWithAuthority(galleryRepository, id)
-            .apply { this.explanation = galleryPatchRequest.explanation ?: this.explanation}
-            .apply { galleryPatchRequest.galleryImageName?.let { name -> this.galleryImage = Image.from(name) }}
-            .apply { this.popularThreshold = galleryPatchRequest.popularThreshold ?: this.popularThreshold }
+            .apply { this.explanation = galleryEditRequest.explanation ?: this.explanation}
+            .apply { galleryEditRequest.galleryImageName?.let { name -> this.galleryImage = Image.from(name) }}
+            .apply { this.popularThreshold = galleryEditRequest.popularThreshold ?: this.popularThreshold }
             .let { gallery -> galleryRepository.save(gallery).let { GalleryResponse.from(it)} }
     }
     @Transactional
-    override fun deleteGallery(id: Long): GalleryResponse {
+    override fun deleteGallery(id: Long) {
         val gallery = RepositoryUtil.getValidatedEntity(galleryRepository, id)
         galleryRepository.delete(gallery)
-        return GalleryResponse.from(gallery)
     }
 
     override fun getGallery(id: Long): GalleryResponse {
