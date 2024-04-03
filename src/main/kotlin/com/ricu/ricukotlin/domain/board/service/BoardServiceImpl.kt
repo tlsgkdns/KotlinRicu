@@ -1,18 +1,15 @@
 package com.ricu.ricukotlin.domain.board.service
 
 import com.ricu.ricukotlin.domain.board.dto.BoardCreateRequest
-import com.ricu.ricukotlin.domain.board.dto.BoardModifyRequest
+import com.ricu.ricukotlin.domain.board.dto.BoardEditRequest
 import com.ricu.ricukotlin.domain.board.dto.BoardResponse
 import com.ricu.ricukotlin.domain.board.dto.BoardSearchRequest
-import com.ricu.ricukotlin.domain.board.model.Board
 import com.ricu.ricukotlin.domain.board.repository.BoardRepository
 import com.ricu.ricukotlin.domain.gallery.repository.GalleryRepository
 import com.ricu.ricukotlin.domain.member.repository.MemberRepository
 import com.ricu.ricukotlin.global.common.PageRequestDTO
 import com.ricu.ricukotlin.global.common.PageResponseDTO
 import com.ricu.ricukotlin.global.util.RepositoryUtil
-import com.ricu.ricukotlin.global.util.SecurityUtil
-import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -40,7 +37,7 @@ class BoardServiceImpl(
     }
 
     @Transactional
-    override fun modifyBoard(bno: Long, boardRequest: BoardModifyRequest): BoardResponse {
+    override fun editBoard(bno: Long, boardRequest: BoardEditRequest): BoardResponse {
         val board = RepositoryUtil.getValidatedEntityWithAuthority(boardRepository, bno)
         return board
             .apply { this.title = boardRequest.title }
