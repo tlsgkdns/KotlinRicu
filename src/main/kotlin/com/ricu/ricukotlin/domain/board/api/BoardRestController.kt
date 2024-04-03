@@ -55,12 +55,12 @@ class BoardRestController(
             ResponseEntity.status(HttpStatus.OK).body(it)
         }
     }
-    @PatchMapping("/{boardId}/like")
+    @PatchMapping("/{boardId}/likes")
     fun clickLike(@PathVariable boardId: Long): ResponseEntity<BoardResponse>
     {
         return boardService.clickLike(boardId).let { ResponseEntity.status(HttpStatus.OK).build() }
     }
-    @PatchMapping("/{boardId}/view")
+    @PatchMapping("/{boardId}/views")
     fun addView(@PathVariable boardId: Long): ResponseEntity<BoardResponse>
     {
         return boardService.addView(boardId).let { ResponseEntity.status(HttpStatus.OK).build() }

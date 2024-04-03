@@ -44,7 +44,12 @@ async function editBoard(galleryId, boardNum, title, content) {
 }
 
 async function clickLike(galleryId, boardNum) {
-    const result = await boardClient.patch(`/galleries/${galleryId}/boards/${boardNum}/like`)
-    console.log(result.data)
+    const result = await boardClient.patch(`/galleries/${galleryId}/boards/${boardNum}/likes`)
+    return result.data
+}
+
+async function addView(galleryId, boardNum)
+{
+    const result = await axios.patch(`/galleries/${galleryId}/boards/${boardNum}/views`)
     return result.data
 }

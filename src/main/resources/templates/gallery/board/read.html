@@ -76,6 +76,8 @@
     const commentPaging = document.querySelector(".commentPaging")
     const boardBtns = document.getElementById("boardBtns")
     const commentText = document.querySelector(".commentText")
+    addView(gid, boardNum)
+
     isAuthenticated().then(data => {
         if(data) {
             getLoginUsername().then(username => {
@@ -235,6 +237,7 @@
             alert("ERROR!! " + e)
         })
     })
+
 
     function refreshBoard() {
         getBoard(gid, boardNum).then(data => {
