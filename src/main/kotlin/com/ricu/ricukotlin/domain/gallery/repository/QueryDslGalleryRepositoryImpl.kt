@@ -18,7 +18,7 @@ class QueryDslGalleryRepositoryImpl: QueryDslSupport(), QueryDslGalleryRepositor
             .where(whereClause)
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
-            .orderBy(gallery.createdTime.asc())
+            .orderBy(gallery.createdAt.asc())
             .fetch()
         return PageImpl(content, pageable, queryFactory.select(gallery.count()).where(whereClause).from(gallery).fetchOne() ?: 0L)
     }

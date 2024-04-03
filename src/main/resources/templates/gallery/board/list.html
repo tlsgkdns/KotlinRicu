@@ -1,10 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layout/basic.html}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layout/basic.html}">
 <link href="/assets/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <style>
     .bd-placeholder-img {
         font-size: 1.125rem;
@@ -31,8 +27,6 @@
         -webkit-overflow-scrolling: touch;
     }
 </style>
-
-
 <!-- Custom styles for this template -->
 <link href="/css/carousel.css" rel="stylesheet">
 <div layout:fragment="content">
@@ -40,14 +34,11 @@
     <div class="container marketing">
         <div class="row featurette">
             <div class="col-md-6 order-md-3" id="galleryInfo">
-
             </div>
             <div class="col-md-5 order-md-2" id="galleryImage">
-
             </div>
         </div>
         <div class="my-2" id="editBtn">
-
         </div>
     </div>
     <hr class="featurette-divider">
@@ -55,7 +46,7 @@
     </div>
     <div class="col-md-1 my-5">
         <form action="/gallery/board/write" id="writeForm">
-            <button type=submit class="btn btn-primary writeBtn" >Write Board</button>
+            <button type=submit class="btn btn-primary writeBtn">Write Board</button>
         </form>
     </div>
     <div class="modal uploadModal" tabindex="-1">
@@ -67,7 +58,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="input-group mb-3">
-                        <input type="file" name="file" class="form-control" >
+                        <input type="file" name="file" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -82,7 +73,6 @@
     <script defer src="/js/gallery.js"></script>
     <script defer src="/js/board.js"></script>
 </div>
-
 <script layout:fragment="script">
     const url = new URL(location.href).searchParams
     const id = url.get("id")
@@ -90,41 +80,32 @@
     const galleryImage = document.getElementById("galleryImage")
     const editBtn = document.getElementById("editBtn")
     const galleryInfo = document.getElementById("galleryInfo")
-
     getGallery(id).then(gallery => {
         if(gallery.errorCode) notExistPage()
         galleryInfo.innerHTML += `<h2 class="featurette-heading lh-0 my-5"><span class="text-body-secondary">Hello! This is Gallery</span> ${gallery.title} </h2>
     <h3 class="featurette-heading lh-0 my-5"><span
         class="text-body-secondary">Manager: </span>${gallery.creatorUsername} </h3>`
-        for(const line of gallery.explanation.split('\n'))
-            galleryInfo.innerHTML += `<p class="lead">${line}</p>`
-        if (gallery.galleryImageName)
-        {
+        for(const line of gallery.explanation.split('\n')) galleryInfo.innerHTML += `<p class="lead">${line}</p>`
+        if(gallery.galleryImageName) {
             galleryImage.innerHTML += `<img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="300" height="300" role="img"
             aria-label="Placeholder: 500x500" src="/images/${gallery.galleryImageName}" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="var(--bs-secondary-bg)"/></img>`
-        }
-        else
-        {
+        } else {
             galleryImage.innerHTML += `<img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="300" height="300" role="img"
                      aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-bg)"/></img>`
         }
-        isSameUser(gallery.creatorUsername).then(
-            data => {
-                if(data)
-                {
-                    editBtn.innerHTML += `<button type="button" class="btn btn-info editGalleryBtn">Edit Gallery</button>`
-                    if (document.querySelector(".editGalleryBtn") != null) {
-                        document.querySelector(".editGalleryBtn").addEventListener("click", function (e) {
-                            self.location = '/gallery/edit?id=' + id
-                        })
-                    }
+        isSameUser(gallery.creatorUsername).then(data => {
+            if(data) {
+                editBtn.innerHTML += `<button type="button" class="btn btn-info editGalleryBtn">Edit Gallery</button>`
+                if(document.querySelector(".editGalleryBtn") != null) {
+                    document.querySelector(".editGalleryBtn").addEventListener("click", function(e) {
+                        self.location = '/gallery/edit?id=' + id
+                    })
                 }
             }
-        )
+        })
     })
-
     document.getElementById("writeForm").innerHTML += `<input type="hidden" name="id" value="${id}">`
-    document.querySelector(".closeUploadBtn").addEventListener("click", function (e) {
+    document.querySelector(".closeUploadBtn").addEventListener("click", function(e) {
         modal.hide()
     })
 </script>

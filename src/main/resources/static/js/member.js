@@ -14,7 +14,7 @@ async function isAuthenticated() {
 async function isSameUser(creator)
 {
     const result = await getLoginUsername()
-    return creator === result.data
+    return creator === result
 }
 function needLoginPage()
 {

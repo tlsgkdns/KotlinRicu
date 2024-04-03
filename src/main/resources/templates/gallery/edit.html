@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layout/basic.html}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/basic.html}">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
 
+<body>
 <div layout:fragment="content">
     <hr class="featurette-divider">
     <div class="container marketing">
@@ -32,7 +30,6 @@
         <button type="button" class="btn btn-success backBtn">Back</button>
         <button type="button" class="btn btn-primary submitBtn">Edit Gallery</button>
     </div>
-
     <div class="modal uploadModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -52,13 +49,11 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/uploadFile.js"></script>
     <script src="/js/gallery.js"></script>
 </div>
 </body>
-
 <script layout:fragment="script" th:inline="javascript">
     const galleryImage = document.querySelector(".galleryImage")
     const galleryId = new URL(location.href).searchParams.get("id")
@@ -66,20 +61,17 @@
     let originFile = null
     let tmpFile = null
     document.getElementsByName("id")[0].value = galleryId
+    getGallery(galleryId).then(gallery => {
+        if(gallery.errorCode) notExistPage()
+        checkCreator(gallery.creatorUsername)
+        originFile = gallery.galleryImageName
+        tmpFile = gallery.galleryImageName
+        setGalleryImage(originFile)
+        setGalleryInfo(gallery)
+    })
 
-    getGallery(galleryId).then(
-        gallery => {
-            if(gallery.errorCode) notExistPage()
-            checkCreator(gallery.creatorUsername)
-            originFile = gallery.galleryImageName
-            tmpFile = gallery.galleryImageName
-            setGalleryImage(originFile)
-            setGalleryInfo(gallery)
-        }
-    )
-    function setGalleryImage(image)
-    {
-        if (image) galleryImage.innerHTML += `<img
+    function setGalleryImage(image) {
+        if(image) galleryImage.innerHTML += `<img
                  class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="300"
                  height="300" xmlns="http://www.w3.org/2000/svg" role="img"
                  aria-label="Placeholder: 500x500" src="/images/${image}"
@@ -88,8 +80,7 @@
             <title>Placeholder</title>
             <rect width="100%" height="100%" fill="var(--bs-secondary-bg)"/>
         </img>`
-        else
-            galleryImage.innerHTML += `<img
+        else galleryImage.innerHTML += `<img
                                  class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
                                  width="300" height="300" xmlns="http://www.w3.org/2000/svg" role="img"
                                  aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice"
@@ -98,8 +89,8 @@
             <rect width="100%" height="100%" fill="var(--bs-secondary-bg)"/>
         </img>`
     }
-    function setGalleryInfo(gallery)
-    {
+
+    function setGalleryInfo(gallery) {
         let str = ''
         str += `<h2 class="featurette-heading lh-0 my-5"><span class="text-body-secondary">Gallery Title: </span> ${gallery.title} </h2>
                 <h3 class="featurette-heading lh-0 my-5"><span class="text-body-secondary">Manager: </span>${gallery.creatorUsername} </h3>
@@ -114,22 +105,24 @@
         str += `</select>`
         galleryInfo.innerHTML = str
     }
-
     const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
-
-    document.querySelector(".uploadFileBtn").addEventListener("click", function (e) {
+    document.querySelector(".uploadFileBtn").addEventListener("click", function(e) {
         showUploadModal(e, uploadModal)
     }, false)
-    document.querySelector(".closeUploadBtn").addEventListener("click", function (e) {
+    document.querySelector(".closeUploadBtn").addEventListener("click", function(e) {
         hideUploadModal(e, uploadModal)
     })
-    document.querySelector(".uploadBtn").addEventListener("click", function (e) {
+    document.querySelector(".uploadBtn").addEventListener("click", function(e) {
         uploadImage(document.querySelector("input[name='file']"), showUploadFile)
     })
-        function showUploadFile({uuid, fileName, link}) {
-            console.log(link)
-            if (tmpFile != null && originFile != tmpFile)
-                removeFileLinkToServer(tmpFile)
+
+    function showUploadFile({
+                                uuid,
+                                fileName,
+                                link
+                            }) {
+        console.log(link)
+        if(tmpFile != null && originFile != tmpFile) removeFileLinkToServer(tmpFile)
         const str = `<div>
                         <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto"
                          width="300" height="300" xmlns="http://www.w3.org/2000/svg" role="img"
@@ -142,29 +135,22 @@
         tmpFile = link
         galleryImage.innerHTML = str
     }
-
     let submitting = false
-    document.querySelector(".submitBtn").addEventListener("click", function (e){
+    document.querySelector(".submitBtn").addEventListener("click", function(e) {
         e.preventDefault()
         e.stopPropagation()
         submitting = true
         if(tmpFile != originFile) removeFileLinkToServer(originFile)
         const explanation = document.getElementById("explanation").value
         const popularThreshold = document.getElementById("popularThreshold").value
-        editGallery(galleryId, explanation, popularThreshold, tmpFile)
-            .then(
-                self.location = `/gallery/board/list?id=${galleryId}`
-            )
+        editGallery(galleryId, explanation, popularThreshold, tmpFile).then(self.location = `/gallery/board/list?id=${galleryId}`)
     }, false)
-
-    document.querySelector(".backBtn").addEventListener("click", function (e){
+    document.querySelector(".backBtn").addEventListener("click", function(e) {
         e.preventDefault()
         e.stopPropagation()
         self.location = `/gallery/home`
     })
-    window.onbeforeunload = function ()
-    {
-        if(!submitting && tmpFile != null && tmpFile != originFile)
-            removeFileLinkToServer(tmpFile)
+    window.onbeforeunload = function() {
+        if(!submitting && tmpFile != null && tmpFile != originFile) removeFileLinkToServer(tmpFile)
     }
 </script>

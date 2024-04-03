@@ -23,13 +23,10 @@
     </form>
     <div class="col">
         <div class="card">
-            <div class="card-header">
-                Board List
-            </div>
+            <div class="card-header"> Board List </div>
             <div class="card-body">
                 <h5 class="card-title">Board List</h5>
                 <div id="modBtns">
-
                 </div>
                 <table class="table">
                     <thead>
@@ -43,12 +40,10 @@
                     </tr>
                     </thead>
                     <tbody id="boardList">
-
                     </tbody>
                 </table>
                 <div class="float-end">
                     <ul class="pagination flex-wrap listPagination">
-
                     </ul>
                 </div>
             </div>
@@ -70,44 +65,31 @@
         const searchType = document.getElementById("searchType").value
         const keyword = document.getElementById("searchKeyword").value
         let popular = false
-        if(mode === "Popular")
-        {
+        if(mode === "Popular") {
             popular = true
             modBtns.innerHTML += `<button type="button" class="btn btn-secondary allModeBtn">ALL</button>
                 <button type="button"  class="btn btn-primary popularModeBtn">Popular</button>`
-        }
-        else
-        {
+        } else {
             popular = false
             modBtns.innerHTML += `<button type="button" class="btn btn-primary allModeBtn">ALL</button>
                 <button type="button"  class="btn btn-secondary popularModeBtn">Popular</button>`
         }
         printBoardList(page, size, keyword, popular, searchType)
 
-        function printBoardList(page, size, keyword, mode, type)
-        {
-            getBoardList(galleryId, page, size, keyword, type, mode).then(
-                result =>
-                {
-                    printBoards(result.dtoList)
-                    printPagination(result)
-                }
-            )
+        function printBoardList(page, size, keyword, mode, type) {
+            getBoardList(galleryId, page, size, keyword, type, mode).then(result => {
+                printBoards(result.dtoList)
+                printPagination(result)
+            })
         }
-        async function printBoards(dtoList)
-        {
-            if(dtoList && dtoList.length > 0)
-            {
+        async function printBoards(dtoList) {
+            if(dtoList && dtoList.length > 0) {
                 let str = ''
-                for(const dto of dtoList)
-                {
+                for(const dto of dtoList) {
                     console.log(dto)
-                    await getCommentCount(galleryId, dto.boardId).then(
-                        commentCount =>
-                        {
-                            if(boardNo != null && boardNo === dto.boardId.toString())
-                            {
-                                str += `<tr> <td style='background: lightgray'>${dto.boardId}</td>
+                    await getCommentCount(galleryId, dto.boardId).then(commentCount => {
+                        if(boardNo != null && boardNo === dto.boardId.toString()) {
+                            str += `<tr> <td style='background: lightgray'>${dto.boardId}</td>
                             <td style='background: lightgray'>
                             <a href="/gallery/board/read?id=${galleryId}&no=${dto.boardId}&page=${page}&mode=${mode}"
                                class="text-decoration-none">${dto.title}</a>
@@ -120,9 +102,8 @@
                             <td style='background: lightgray'>${dto.likeCount}</td>
                             <td style='background: lightgray'>${dateFormat(dto.createdTime)}</td>
                             </tr>`
-                            }
-                            else {
-                                str += `<tr>
+                        } else {
+                            str += `<tr>
                         <td>${dto.boardId}</td>
                         <td>
                             <a href="/gallery/board/read?id=${galleryId}&no=${dto.boardId}&page=${page}&mode=${mode}"
@@ -136,36 +117,31 @@
                         <td>${dto.likeCount}</td>
                         <td>${dateFormat(dto.createdTime)}</td>
                         </tr>`
-                            }
                         }
-                    )
+                    })
                 }
                 document.getElementById("boardList").innerHTML = str
             }
         }
-        function printPagination(data)
-        {
+
+        function printPagination(data) {
             let pageStr = '';
-            if(data.prev)
-            {
+            if(data.prev) {
                 pageStr += `<li class="page-item"><a class="page-link" board-page="${data.start - 1}">PREV</a></li>`
             }
-            for(let i = data.start; i <= data.end; i++)
-            {
+            for(let i = data.start; i <= data.end; i++) {
                 pageStr += `<li class="page-item ${i === data.page? "active" : ""} "><a class="page-link" board-page="${i}">${i}</a></li>`
             }
-            if(data.next)
-            {
+            if(data.next) {
                 pageStr += `<li class="page-item"><a class="page-link" board-page="${data.end + 1}">NEXT</a></li>`
             }
             listPagination.innerHTML = pageStr
         }
-        document.querySelector(".listPagination").addEventListener("click", function(e){
+        document.querySelector(".listPagination").addEventListener("click", function(e) {
             e.preventDefault()
             e.stopPropagation()
             const target = e.target
-
-            if(target.tagName !== 'A'){
+            if(target.tagName !== 'A') {
                 return
             }
             const num = target.getAttribute("board-page")
@@ -175,27 +151,27 @@
             formObj.innerHTML += `<input type='hidden' name='mode' value='${mode}'>`
             formObj.submit()
         }, false)
-        document.querySelector(".clearBtn").addEventListener("click", function (e){
+        document.querySelector(".clearBtn").addEventListener("click", function(e) {
             e.preventDefault()
             e.stopPropagation()
             self.location = '/gallery/board/list?id=' + id;
         }, false)
-
-        document.querySelector(".allModeBtn").addEventListener("click", function (e){
+        document.querySelector(".allModeBtn").addEventListener("click", function(e) {
             e.preventDefault()
             e.stopPropagation()
             self.location = `/gallery/board/list?id=` + id;
         })
-        document.querySelector(".popularModeBtn").addEventListener("click", function (e){
+        document.querySelector(".popularModeBtn").addEventListener("click", function(e) {
             e.preventDefault()
             e.stopPropagation()
             self.location = `/gallery/board/list?id=` + id + `&mode=Popular`;
         })
-        document.querySelector(".searchBtn").addEventListener("click", function (e){
+        document.querySelector(".searchBtn").addEventListener("click", function(e) {
             e.preventDefault()
             e.stopPropagation()
             printBoardList(page, size, document.getElementById("searchKeyword").value, popular, document.getElementById("searchType").value)
         })
     </script>
 </div>
+
 </html>
