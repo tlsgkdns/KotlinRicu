@@ -23,7 +23,7 @@
  * React나 Vue의 사용을 고민했지만, 러닝 커브가 있고, 시간이 많이 없었기에, 기존의 Thymeleaf를 재활용해서, 클라이언트 사이드 방식으로 전환했다.
  * 다만, 몇몇 뼈대에서 Thymeleaf를 지우는 것은 힘들었기에, Thymeleaf를 부분적으로 도입하였다.
 
-<img src="https://github.com/tlsgkdns/RicuKotlin/assets/24753709/882d6552-9ddd-4826-bb70-f8c4af28f845" width="500"> 
+<img src="https://github.com/tlsgkdns/RicuKotlin/assets/24753709/882d6552-9ddd-4826-bb70-f8c4af28f845" width="500"></img>
 > 기존의 SSR 방식의 프론트엔드를
 
 <img src="https://github.com/tlsgkdns/RicuKotlin/assets/24753709/537f8c48-80bf-4139-9aea-684c60382c49" width="500"></img>
