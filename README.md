@@ -177,7 +177,7 @@ class LengthChecker(
 ```
 
 ```kotlin
-private val nicknameAvailableCheckList = AvailableCheckList(
+    private val nicknameAvailableCheckList = AvailableCheckList(
         listOf(
             DuplicateChecker(memberRepository::existsByNickname),
             LengthChecker(3, 20),
