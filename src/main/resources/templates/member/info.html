@@ -73,6 +73,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/board.js"></script>
     <script src="/js/gallery.js"></script>
+    <script src="/js/comment.js"></script>
 </div>
 
 <script layout:fragment="script" th:inline="javascript">
@@ -233,12 +234,12 @@
         getBoardList(galleryID, page, 10, "", "", false).then(
             result => {
                 console.log(result)
-                printBoardList(result.dtoList)
+                printBoardList(galleryID, result.dtoList)
                 printPages(result)
             }
         ).catch(e => alert("Exception while getList!"))
     }
-    function printBoardList(dtoList)
+    async function printBoardList(galleryId, dtoList)
     {
         let str = ''
         console.log(dtoList)
@@ -246,20 +247,23 @@
         {
             for(const dto of dtoList)
             {
-                str += `<tr>
+                await getCommentCount(galleryId, dto.boardId).then(
+                    commentCount => {
+                        str += `<tr>
               <td>${dto.boardId}</td>
               <td>
                 <a class="text-decoration-none" href="/gallery/board/read?id=${gid}&bno=${dto.bno}&page=1&mode='ALL'">
                     ${dto.title}</a>
                 <span class="badge progress-bar-success" style="background-color:#0a53be" >
-                                    ${dto.commentCount}
+                                    ${commentCount}
                                 </span>
               </td>
               <td>${dto.creatorUsername}</td>
               <td>${dto.views}</td>
               <td>${dto.likeCount}</td>
-              <td>${dateFormat(new Date(dto.createdDate))}</td>
+              <td>${dateFormat(dto.createdTime)}</td>
               </tr>`
+                    })
             }
         }
         document.querySelector(".boardListBody").innerHTML = str

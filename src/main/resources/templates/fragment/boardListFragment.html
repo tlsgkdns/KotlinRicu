@@ -86,9 +86,9 @@
             if(dtoList && dtoList.length > 0) {
                 let str = ''
                 for(const dto of dtoList) {
-                    console.log(dto)
                     await getCommentCount(galleryId, dto.boardId).then(commentCount => {
                         if(boardNo != null && boardNo === dto.boardId.toString()) {
+
                             str += `<tr> <td style='background: lightgray'>${dto.boardId}</td>
                             <td style='background: lightgray'>
                             <a href="/gallery/board/read?id=${galleryId}&no=${dto.boardId}&page=${page}&mode=${mode}"
@@ -103,6 +103,7 @@
                             <td style='background: lightgray'>${dateFormat(dto.createdTime)}</td>
                             </tr>`
                         } else {
+                            console.log(commentCount)
                             str += `<tr>
                         <td>${dto.boardId}</td>
                         <td>

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 @RequestMapping("/gallery/board")
 class BoardController {
-
     @GetMapping("/list")
     fun boardList()
     {

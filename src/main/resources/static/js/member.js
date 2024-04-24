@@ -14,6 +14,7 @@ async function isAuthenticated() {
 async function isSameUser(creator)
 {
     const result = await getLoginUsername()
+    console.log(result)
     return creator === result
 }
 function needLoginPage()
@@ -31,9 +32,10 @@ function needLoginPage()
 
 function checkCreator(creator)
 {
+    console.log(creator)
     isSameUser(creator).then(
         data => {
-            if(data)
+            if(!data)
             {
                 alert("접근 권한이 없습니다.")
                 location.href = "/gallery/home"
