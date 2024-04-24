@@ -36,6 +36,14 @@ JPARepository에서 엔티티가 없을 경우 커스텀 에러 발생을 웠했
 ### Generic을 활용해서 엔티티 ID와 Repository를 받는 static 메소드 생성하면 어떨까?
   * 엔티티 마다의 메소드 정의 없이 커스텀 에러 발생
   * 중복 코드가 최소화되었고, 확장성 있어서, 이 안을 채용하였다.
+```kotlin
+        fun <T, ID> getValidatedEntity(repository: JpaRepository<T, ID>, entityId: ID): T
+        {
+            val entity = repository.findByIdOrNull(entityId)
+                ?: throw ModelNotFoundException(repository.javaClass.genericSuperclass.typeName, entityId.toString())
+            return entity
+        }
+```
 
 ## 클라이언트 사이드 렌더링 방식 채택
  * Thymeleaf를 최소화했다.
