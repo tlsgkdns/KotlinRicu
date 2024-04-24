@@ -196,7 +196,8 @@ private val nicknameAvailableCheckList = AvailableCheckList(
 > 확장성 있도록 수정
 
 # 결과
-[RICU](https://github.com/tlsgkdns/ricu)와 화면이 완전히 동일하다.
+![image](https://github.com/tlsgkdns/RicuKotlin/assets/24753709/55979753-57e9-490b-a79d-ab89956330f0)
+[여기](https://www.figma.com/file/wIPE420qzrb4f53U4WjNgL/KotlinRICU?type=design&node-id=0%3A1&mode=design&t=NYxpf2tXbEIm1T8H-1)에서 자세한 화면을 볼 수 있다.
 
 # 개선해 볼 점
 ## 캐싱 기능
