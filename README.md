@@ -166,7 +166,7 @@ class AvailableCheckList(
             {
                 return AvailableResponse(false, checker.errorMessage)
             }
-        return AvailableResponse(true, "사용할 수 있습니다.")
+        return AvailableResponse(true, "使用できます.")
     }
 }
 ```
@@ -175,7 +175,7 @@ class AvailableCheckList(
 class LengthChecker(
     private val minLength: Int,
     private val maxLength: Int,
-    override val errorMessage: String = "길이는 $minLength 이상 $maxLength 이하여야 합니다."
+    override val errorMessage: String = "長さは $minLength 以上 $maxLength 以下でなければなりません"
 ): ValueChecker {
     override fun check(checkValue: String): Boolean {
         return checkValue.length >= this.minLength && checkValue.length <= this.maxLength
