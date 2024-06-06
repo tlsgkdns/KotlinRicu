@@ -1,15 +1,15 @@
 # 개요
-## 소개
-공통된 관심사를 이야기할 수 있는 갤러리를 생성하여, 갤러리마다의 게시글을 작성할 수 있는 커뮤니티 게시판
-## 기획 의도
-부트캠프에서 배운 것을 적용해보기 위해서, 첫 개인 웹 프로젝트였던, [RICU](https://github.com/tlsgkdns/ricu)를 Kotlin 으로 옮기고, 개선하기 위해 기획하였다.
-## 개발 기간
+## 紹介
+共通の関心事を話すことができるギャラリーを作成し、ギャラリーで掲示文を作成することができるコミュニティ掲示板
+## 企画意図
+ブートキャンプで学んだことを適用してみるために, 初めての個人ウェブプロジェクトだった, [RICU](https://github.com/tlsgkdns/ricu)をKotlinに移し，改善するために企画した
+## 開発期間
 2024-03-12 ~ 2024-04-02
-## 개발 환경
+## 開発環境
 * OS: <img src="https://img.shields.io/badge/window 10-0078D6?style=for-the-badge&logo=windows 10&logoColor=white">
 * IDE: <img src="https://img.shields.io/badge/intellij 2023.3.1-000000?style=for-the-badge&logo=intellijidea&logoColor=white">
-* 실행 브라우저: <img src="https://img.shields.io/badge/chrome-4285f4?style=for-the-badge&logo=googlechrome&logoColor=white">
-## 기술 스택
+* 実行ブラウザ: <img src="https://img.shields.io/badge/chrome-4285f4?style=for-the-badge&logo=googlechrome&logoColor=white">
+## 技術スタック
 * Front-end: <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white"> <img src="https://img.shields.io/badge/thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white"> <img src="https://img.shields.io/badge/axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white">
 * Back-end: <img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"> <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">, QueryDsl
 * Database: <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
@@ -19,23 +19,22 @@
 
 ---
 
-# 구현 단계
- * 1단계: 갤러리, 게시판, 댓글 CRUD
- * 2단계: Spring Security로 회원가입/로그인 기능 구현, 갤러리 및 프로필 사진 CRD
- * 3단계: 프론트엔드
- * 4단계: Rest-API를 활용한 추천 검색어 기능
- * 5단계: 값 유효 여부를 바로 보여주는 기능 
+# 実装段階
+ * 1段階: ギャラリー、掲示板、コメント CRUD
+ * 2段階: Spring Securityで会員登録/ログイン機能の追加、ギャラリー及びプロフィール写真 CRD
+ * 3段階: フロントエンド
+ * 4段階: Rest-APIを活用したおすすめ検索語機能
+ * 5段階: テキストが有効かどうかをすぐに示す機能 
 ---
-
-# 기술적 의사 결정
-## 커스텀 에러의 고민
-JPARepository에서 엔티티가 없을 경우 커스텀 에러 발생을 웠했지만, 엔티티마다 커스텀 에러 발생 메소드를 정의하는 것이 번거롭게 여겨졌기에 개선을 고민하였다.
-### JPARepository를 상속 받는 클래스를 생성한 뒤, 이 클래스에서 커스텀 에러 발생시키면 어떨까?
-  * Repository를 상속 받은 클래스 내에서 쿼리와 상관없는 메스드를 생성할 수가 없어서 구현 자체가 안 된다.
-  * 거기다가, Service단이 아닌 Repository단에서 커스텀 에러를 발생시키는 것은 바람직하지 않아서 이 안은 폐기했다.
-### Generic을 활용해서 엔티티 ID와 Repository를 받는 static 메소드 생성하면 어떨까?
-  * 엔티티 마다의 메소드 정의 없이 커스텀 에러 발생
-  * 중복 코드가 최소화되었고, 확장성 있어서, 이 안을 채용하였다.
+# 技術的意思決定
+## カスタムエラーの悩み
+JPARepositoryでエンティティがない場合、カスタムエラー発生を望んだが、エンティティごとにカスタムエラー発生メソッドを定義することが面倒に思われたため、改善に悩んだ。
+### JPARepositoryを継承するクラスを生成した後、このクラスでカスタムエラーが発生させたらどうだろうか?
+  * Repositoryを相続したクラス内で、クエリーと関係のないメスドを生成することができないため、具現自体ができない.
+  * さらに、Service 端ではなくRepository 端でカスタムエラーを発生させることは望ましくないため、この案は廃棄した.
+### Genericを活用してエンティティIDとRepositoryを受け取るstaticメソッドを生成したらどうだろうか?
+  * エンティティごとのメソッド定義なしでカスタムエラー発生
+  * 重複コードが最小化され、拡張性があるため、この案を採用した.
 ```kotlin
         fun <T, ID> getValidatedEntity(repository: JpaRepository<T, ID>, entityId: ID): T
         {
@@ -45,11 +44,11 @@ JPARepository에서 엔티티가 없을 경우 커스텀 에러 발생을 웠했
         }
 ```
 
-## 클라이언트 사이드 렌더링 방식 채택
- * Thymeleaf를 최소화했다.
- * Rest-API를 적극적으로 활용할 수 있는 방법을 고민한 결과, 기존의 서버 사이드 렌더링 방식에서, 클라이언트 사이드 렌더링 방식에 가까운 형식으로 전환했다.
- * React나 Vue의 사용을 고민했지만, 러닝 커브가 있고, 시간이 많이 없었기에, 기존의 Thymeleaf를 재활용해서, 클라이언트 사이드 방식으로 전환했다.
- * 다만, 몇몇 뼈대에서 Thymeleaf를 지우는 것은 힘들었기에, Thymeleaf를 부분적으로 도입하였다.
+## クライアントサイドレンダリング方式の採用
+ * Thymeleaf使用を最小化した
+ * Rest-APIを積極的に活用できる方法を考えた結果、以前のサーバサイドレンダリング方式から、クライアントサイドレンダリング方式に近い形式に切り替えた。
+ * ReactやVueの使用に悩んだが、ランニングカーブがあり、時間があまりなかったため、既存のThymeleafをリサイクルして、クライアントサイド方式に切り替えた。
+ * ただし、いくつからThymeleafを消すのは難しいと判断して、Thymeleafを部分的に取り入れた。
 
 ``` html
 <div class="card">
@@ -93,7 +92,7 @@ JPARepository에서 엔티티가 없을 경우 커스텀 에러 발생을 웠했
         </div>
     </div>
 ```
-> 기존의 SSR 방식의 프론트엔드를
+> 以前のSSR方式のフロントエンドを
 
 ```javascript
 getBoard(gid, boardNum).then(board => {
@@ -127,13 +126,13 @@ getBoard(gid, boardNum).then(board => {
         document.getElementById("boardCreatedTime").innerHTML += dateFormat(board.createdTime)
     })
 ```
-> CSR 방식에 가까운 방식으로 전환했다.
+> CSR方式に近い方式に切り替えた
 
-## 커맨드 패턴
- * 커맨드 패턴을 활용해서 확장성을 늘렸다.
- * 특정 값이 유효한지 프론트엔드에 바로바로 보여주는 형식을 택했는데 유효값을 검증하는 메소드의 뼈대가 비슷해서, 코드의 중복을 줄이는 방법을 고민하였다.
- * 유효 값 검증은 다른 곳에서도 사용을 할 것이고, 유효 기준도 그때 그때 달라질 수 있어서, 좀 더 확장성 있는 방법을 선호했고, 따라서 이 방식을 택했다.
- * 되도록 서버와 클라이언트 사이의 통신을 줄이고 싶어서, 처음엔 유효값 검증을 프론트엔드에서 했지만, 비동기 함수의 도입으로 인해서 다른 함수에 영향이 미쳤기에 백엔드로 옮겼다.
+## コマンド·パターン
+ * コマンドパターンを活用して拡張性を増した
+ * 特定値が有効なのかフロントエンドにすぐに示す形式を選んだが、有効値を検証するメソッドの骨組みが似ていて、コードの重複を減らす方法を悩んだ
+ * 有効値の検証は他の場所でも使用し、有効基準もその都度変わることがあるので、より拡張性のある方法を好んだので、この方式を選んだ。.
+ * なるべくサーバとクライアントとの間の通信を減らしたいと思い、最初は有効値の検証をフロントエンドで行ったが、非同期関数の導入により他の関数に影響が出たため、バックエンドに移った
 
 ```java
     @Override
@@ -154,7 +153,7 @@ getBoard(gid, boardNum).then(board => {
         return 0;
     }
 ```
-> 반복되는 검증 메소드를
+> 繰り返す検証メソッドを
 
 ```kotlin
 class AvailableCheckList(
@@ -201,17 +200,17 @@ class LengthChecker(
     )
 ```
 
-> 확장성 있도록 수정
+> 拡張性があるように修正
 
-# 결과
+# 結果.
 ![image](https://github.com/tlsgkdns/RicuKotlin/assets/24753709/55979753-57e9-490b-a79d-ab89956330f0)
-[여기](https://www.figma.com/file/wIPE420qzrb4f53U4WjNgL/KotlinRICU?type=design&node-id=0%3A1&mode=design&t=NYxpf2tXbEIm1T8H-1)에서 자세한 화면을 볼 수 있다.
+[ここ](https://www.figma.com/file/wIPE420qzrb4f53U4WjNgL/KotlinRICU?type=design&node-id=0%3A1&mode=design&t=NYxpf2tXbEIm1T8H-1)で詳細な画面を見ることができる。
 
-# 개선해 볼 점
-## 캐싱 기능
-이 웹 사이트엔 좋아요 기능이 존재한다. 캐싱 기능을 이용하면 더 빠르게 게시글을 불러올 수 있을 것이다.
-테스트를 할 땐 nGrinder 같은 도구를 활용해 볼 수 있을 것을 기대한다.
+# 改善すべき点
+## キャッシング機能
+このウェブサイトにはいいね機能が存在する。 キャッシング機能を使えば，より早く掲示板を読み込むことができるだろう。
+テストをする時はnGrinderのようなツールを活用してみることができることを期待する.
 
-## 프론트엔드의 아쉬움
-기존 RICU의 프론트엔드 디자인을 그대로 가져왔는데, Bootstrap 템플릿을 가져와서 조립한 것이라서, 다소 거친면이 있다.
-위에서 언급된 이유로 인해 Thymeleaf를 사용했지만, 수정할 기회가 있다면, React나 Vue를 배워서 사용을 해보고 싶다.
+## フロントエンドの物足りなさ
+既存のRICUのフロントエンドデザインをそのまま持ってきたが、Bootstrapテンプレートを持ってきて組み立てたものなので、多少足りない面がある。
+上記の理由によりThymeleafを使用したが、修正する機会があれば、ReactやVueを学んで使用してみたい
